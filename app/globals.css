@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+:root, [data-theme="day"] {
+  --env-text: rgba(25, 25, 25, 0.92);
+  --env-text-muted: rgba(25, 25, 25, 0.6);
+  --env-surface: rgba(255, 255, 255, 0.5);
+  --env-border: rgba(18, 18, 18, 0.08);
+  --env-glow: 0 0 0px transparent;
+  --env-blur: 24px;
+  --env-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  --env-text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+  
+  /* Central Node Day Adjustments */
+  --env-center-bg: rgba(255, 255, 255, 0.82);
+  --env-center-border: rgba(255, 255, 255, 0.6);
+  --env-center-text: #111827;
+  
+  /* Line Day Adjustments */
+  --env-line-filter: drop-shadow(0px 1px 1.5px rgba(0, 0, 0, 0.22));
+  --env-line-opacity-idle: 0.38;
+}
+
+[data-theme="night"] {
+  --env-text: rgba(255, 255, 255, 0.95);
+  --env-text-muted: rgba(255, 255, 255, 0.6);
+  --env-surface: rgba(15, 15, 18, 0.6);
+  --env-border: rgba(255, 255, 255, 0.08);
+  --env-glow: 0 0 12px rgba(255, 255, 255, 0.02);
+  --env-blur: 24px;
+  --env-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --env-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  
+  /* Central Node Night Adjustments */
+  --env-center-bg: rgba(15, 20, 35, 0.85);
+  --env-center-border: rgba(255, 255, 255, 0.15);
+  --env-center-text: #FFFFFF;
+  
+  /* Line Night Adjustments */
+  --env-line-filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.7));
+  --env-line-opacity-idle: 0.22;
+}
+
+[data-theme="sunset"] {
+  --env-text: #FFF4E8;
+  --env-text-muted: rgba(255, 244, 232, 0.65);
+  --env-surface: rgba(45, 25, 20, 0.65);
+  --env-border: rgba(253, 186, 116, 0.15);
+  --env-glow: 0 0 15px rgba(249, 115, 22, 0.15);
+  --env-blur: 24px;
+  --env-shadow: 0 8px 32px rgba(249, 115, 22, 0.12);
+  --env-text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+  
+  /* Central Node Sunset Adjustments */
+  --env-center-bg: rgba(60, 35, 25, 0.80);
+  --env-center-border: rgba(253, 186, 116, 0.2);
+  --env-center-text: #FFF5EB;
+  
+  /* Line Sunset Adjustments (Opacity increased for visibility) */
+  --env-line-filter: drop-shadow(0px 1px 2px rgba(40, 20, 10, 0.65)) drop-shadow(0px 0px 4px rgba(253, 186, 116, 0.3));
+  --env-line-opacity-idle: 0.50;
+}
+
+[data-theme="sunrise"] {
+  --env-text: #111827;
+  --env-text-muted: rgba(17, 24, 39, 0.6);
+  --env-surface: rgba(245, 240, 230, 0.55);
+  --env-border: rgba(28, 25, 23, 0.08);
+  --env-glow: 0 0 10px rgba(253, 224, 71, 0.05);
+  --env-blur: 24px;
+  --env-shadow: 0 8px 32px rgba(28, 25, 23, 0.04);
+  --env-text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+  
+  /* Central Node Sunrise Adjustments */
+  --env-center-bg: rgba(255, 255, 255, 0.75);
+  --env-center-border: rgba(28, 25, 23, 0.15);
+  --env-center-text: #111827;
+  
+  /* Line Sunrise Adjustments */
+  --env-line-filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.12));
+  --env-line-opacity-idle: 0.38;
+}
+
+@theme {
+  --font-heading: var(--font-heading), system-ui, sans-serif;
+  --font-body: var(--font-body), system-ui, sans-serif;
+  
+  --color-env-text: var(--env-text);
+  --color-env-muted: var(--env-text-muted);
+  --color-env-surface: var(--env-surface);
+  --color-env-border: var(--env-border);
+  
+  --color-env-center-bg: var(--env-center-bg);
+  --color-env-center-border: var(--env-center-border);
+  --color-env-center-text: var(--env-center-text);
+  
+  --radius-xl: 14px;
+  --radius-lg: 12px;
+  --radius-md: 10px;
+}
+
+body {
+  background-color: transparent;
+  color: var(--env-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--env-text);
+}
+
+/* Custom transitions and easing utility */
+.transition-env {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scene-aware text-shadow utility */
+.text-shadow-env {
+  text-shadow: var(--env-text-shadow);
+}
