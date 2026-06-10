@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { NodeGraph } from "@/components/navigation/NodeGraph";
 import { EmergingPanel } from "@/components/navigation/EmergingPanel";
 import { Button } from "@/components/shared/Button";
 import { Card } from "@/components/shared/Card";
+import { PROJECTS } from "@/lib/projects";
 import { Project, SocialLink } from "@/types/portfolio";
 import { GithubIcon, LinkedinIcon, InstagramIcon } from "@/components/shared/Icons";
 import { ExternalLink, Code2, Server, Database, Palette } from "lucide-react";
@@ -14,22 +16,6 @@ import { ExternalLink, Code2, Server, Database, Palette } from "lucide-react";
 TODO: Future project: "UX Design Gallery"
 This will later showcase landing page concepts, product flows, mobile screens, and UI explorations hosted within the portfolio itself.
 */
-const PROJECTS: Project[] = [
-  {
-    id: "project-1",
-    title: "Law Practice Platform",
-    description: "Built a modern website platform for a well-known legal professional. Beyond a traditional landing page, the platform gives complete control over website content through a secure admin experience, allowing updates without touching code or databases. Integrated consultation workflows using Resend and Twilio, while maintaining strong SEO foundations and mobile responsiveness.",
-    tags: ["Next.js", "Node.js", "Resend", "Twilio", "SEO", "Responsive Design"],
-    link: "https://altafs-website-6pmd.vercel.app/",
-  },
-  {
-    id: "project-2",
-    title: "EventUally",
-    description: "A mobile-first event planning platform designed to simplify group coordination. EventUally helps friends, families, and communities organize events, manage RSVPs, coordinate venues, and keep everyone on the same page without endless messaging threads. Built with a strong focus on privacy, usability, and reducing the friction involved in planning group events.",
-    tags: ["React Native", "Node.js", "PostgreSQL", "Event Planning", "Mobile App"],
-    link: "https://eventuallyapp.in",
-  },
-];
 
 export default function Home() {
   const [activeNode, setActiveNode] = useState<string | null>(null);
@@ -114,7 +100,7 @@ export default function Home() {
     <div className="relative min-h-screen w-full flex flex-col justify-between p-6">
       
       {/* Top Left: Title & Branding */}
-      <header className="fixed top-0 left-0 pt-10 md:pt-12 lg:pt-16 pl-6 md:pl-8 lg:pl-10 z-40 max-w-[320px] sm:max-w-md md:max-w-lg select-none pointer-events-none flex flex-col gap-1 md:gap-1.5">
+      <header className="fixed top-0 left-0 pt-10 md:pt-12 lg:pt-16 pl-6 md:pl-8 lg:pl-10 z-40 max-w-[360px] sm:max-w-md md:max-w-lg select-none pointer-events-none flex flex-col gap-1 md:gap-1.5">
         <h1 className="text-xl md:text-2xl lg:text-3xl font-extrabold tracking-widest text-env-text uppercase font-heading leading-none pointer-events-auto text-shadow-env">
           Rajat Deep Singh
         </h1>
@@ -129,7 +115,7 @@ export default function Home() {
         </p>
         
         {/* Action Buttons */}
-        <div className="flex flex-row items-center gap-4 mt-3 pointer-events-auto">
+        <div className="flex flex-wrap items-center gap-3 mt-3 pointer-events-auto">
           {/* Primary CTA (Filled) */}
           <a
             href="/cv/RajatCvJune.pdf"
@@ -147,6 +133,13 @@ export default function Home() {
           >
             Download CV
           </a>
+          {/* Tertiary CTA (Outlined & Frosted) - Link to Experience page */}
+          <Link
+            href="/experience"
+            className="inline-flex items-center justify-center rounded-lg border border-env-border bg-env-surface/20 backdrop-blur-xs px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-text hover:bg-env-surface/40 hover:border-env-text transition-all duration-[250ms] ease-in-out select-none hover:scale-[1.02] focus:ring-2 focus:ring-env-border focus:ring-offset-2 outline-none"
+          >
+            View Experience
+          </Link>
         </div>
 
         {/* Constellation Onboarding Guidance Hint */}
@@ -250,10 +243,29 @@ export default function Home() {
                         </a>
                       )}
                       {project.link && (
-                        <a href={project.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted">
-                          <ExternalLink className="h-3 w-3" />
-                          {"Visit Website →"}
-                        </a>
+                        project.link.startsWith("/") ? (
+                          <Link
+                            href={project.link}
+                            className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted"
+                          >
+                            {"View Experience →"}
+                          </Link>
+                        ) : (
+                          <a
+                            href={project.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                            {"Visit Website →"}
+                          </a>
+                        )
+                      )}
+                      {project.comingSoon && (
+                        <span className="inline-flex items-center text-env-muted select-none">
+                          {"Coming Soon"}
+                        </span>
                       )}
                     </div>
                   </Card>

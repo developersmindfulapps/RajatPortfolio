@@ -93,6 +93,14 @@
   --color-env-center-border: var(--env-center-border);
   --color-env-center-text: var(--env-center-text);
   
+  --color-exp-heading: var(--exp-heading);
+  --color-exp-body: var(--exp-body);
+  --color-exp-secondary: var(--exp-secondary);
+  --color-exp-card-bg: var(--exp-card-bg);
+  --color-exp-card-border: var(--exp-card-border);
+  --color-exp-btn-bg: var(--exp-btn-primary-bg);
+  --color-exp-btn-text: var(--exp-btn-primary-text);
+  
   --radius-xl: 14px;
   --radius-lg: 12px;
   --radius-md: 10px;
@@ -119,3 +127,57 @@ h1, h2, h3, h4, h5, h6 {
 .text-shadow-env {
   text-shadow: var(--env-text-shadow);
 }
+
+/* High-Contrast Experience Page Overrides */
+.experience-page-container {
+  /* Default / Day values */
+  --exp-heading: #111827;
+  --exp-body: #1F2937;
+  --exp-secondary: #4B5563;
+  --exp-card-bg: rgba(255, 255, 255, 0.20);
+  --exp-card-border: rgba(18, 18, 18, 0.12);
+  --exp-btn-primary-bg: #111827;
+  --exp-btn-primary-text: #FFFFFF;
+}
+
+[data-theme="day"] .experience-page-container {
+  --exp-heading: #111827;
+  --exp-body: #1F2937;
+  --exp-secondary: #4B5563;
+  --exp-card-bg: rgba(255, 255, 255, 0.20);
+  --exp-card-border: rgba(18, 18, 18, 0.12);
+  --exp-btn-primary-bg: #111827;
+  --exp-btn-primary-text: #FFFFFF;
+}
+
+[data-theme="sunrise"] .experience-page-container {
+  --exp-heading: #111827;
+  --exp-body: #1F2937;
+  --exp-secondary: #4B5563;
+  --exp-card-bg: rgba(255, 255, 255, 0.22);
+  --exp-card-border: rgba(28, 25, 23, 0.12);
+  --exp-btn-primary-bg: #111827;
+  --exp-btn-primary-text: #FFFFFF;
+}
+
+[data-theme="night"] .experience-page-container {
+  --exp-heading: #FFFFFF;
+  --exp-body: rgba(255, 255, 255, 0.92);
+  --exp-secondary: rgba(255, 255, 255, 0.72);
+  --exp-card-bg: rgba(255, 255, 255, 0.08);
+  --exp-card-border: rgba(255, 255, 255, 0.10);
+  --exp-btn-primary-bg: #FFFFFF;
+  --exp-btn-primary-text: #111827;
+}
+
+[data-theme="sunset"] .experience-page-container {
+  --exp-heading: #FFFFFF;
+  --exp-body: rgba(255, 255, 255, 0.92);
+  --exp-secondary: rgba(255, 255, 255, 0.78);
+  --exp-card-bg: rgba(255, 255, 255, 0.10);
+  --exp-card-border: rgba(253, 186, 116, 0.18);
+  --exp-btn-primary-bg: #FFFFFF;
+  --exp-btn-primary-text: #2D1914;
+}
+
+
