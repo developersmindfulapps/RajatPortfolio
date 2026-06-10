@@ -7,24 +7,27 @@ import { EmergingPanel } from "@/components/navigation/EmergingPanel";
 import { Button } from "@/components/shared/Button";
 import { Card } from "@/components/shared/Card";
 import { Project, SocialLink } from "@/types/portfolio";
-import { GithubIcon } from "@/components/shared/Icons";
-import { ExternalLink } from "lucide-react";
+import { GithubIcon, LinkedinIcon, InstagramIcon } from "@/components/shared/Icons";
+import { ExternalLink, Code2, Server, Database, Palette } from "lucide-react";
 
+/*
+TODO: Future project: "UX Design Gallery"
+This will later showcase landing page concepts, product flows, mobile screens, and UI explorations hosted within the portfolio itself.
+*/
 const PROJECTS: Project[] = [
   {
     id: "project-1",
-    title: "Dynamic Application Platform",
-    description: "An advanced cloud application dashboard optimizing real-time event streaming and data rendering pipelines.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
-    github: "https://github.com/developersmindfulapps",
-    link: "https://example.com",
+    title: "Law Practice Platform",
+    description: "Built a modern website platform for a well-known legal professional. Beyond a traditional landing page, the platform gives complete control over website content through a secure admin experience, allowing updates without touching code or databases. Integrated consultation workflows using Resend and Twilio, while maintaining strong SEO foundations and mobile responsiveness.",
+    tags: ["Next.js", "Node.js", "Resend", "Twilio", "SEO", "Responsive Design"],
+    link: "https://altafs-website-6pmd.vercel.app/",
   },
   {
     id: "project-2",
-    title: "Distributed Query Engine",
-    description: "A high-performance query compiler executing decentralized data synchronization and filtering logic.",
-    tags: ["Rust", "Wasm", "TypeScript"],
-    github: "https://github.com/developersmindfulapps",
+    title: "EventUally",
+    description: "A mobile-first event planning platform designed to simplify group coordination. EventUally helps friends, families, and communities organize events, manage RSVPs, coordinate venues, and keep everyone on the same page without endless messaging threads. Built with a strong focus on privacy, usability, and reducing the friction involved in planning group events.",
+    tags: ["React Native", "Node.js", "PostgreSQL", "Event Planning", "Mobile App"],
+    link: "https://eventuallyapp.in",
   },
 ];
 
@@ -129,7 +132,7 @@ export default function Home() {
         <div className="flex flex-row items-center gap-4 mt-3 pointer-events-auto">
           {/* Primary CTA (Filled) */}
           <a
-            href="/cv/Rajat CV.pdf"
+            href="/cv/RajatCvJune.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded-lg bg-env-text px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-surface hover:opacity-90 transition-all duration-[250ms] ease-in-out select-none shadow-xs hover:scale-[1.02] focus:ring-2 focus:ring-env-text focus:ring-offset-2 outline-none"
@@ -138,7 +141,7 @@ export default function Home() {
           </a>
           {/* Secondary CTA (Outlined & Frosted) */}
           <a
-            href="/cv/Rajat CV.pdf"
+            href="/cv/RajatCvJune.pdf"
             download="Rajat_Deep_Singh_CV.pdf"
             className="inline-flex items-center justify-center rounded-lg border border-env-border bg-env-surface/20 backdrop-blur-xs px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-text hover:bg-env-surface/40 hover:border-env-text transition-all duration-[250ms] ease-in-out select-none hover:scale-[1.02] focus:ring-2 focus:ring-env-border focus:ring-offset-2 outline-none"
           >
@@ -200,14 +203,26 @@ export default function Home() {
           >
             {activeNode === "about" && (
               <div className="space-y-4">
-                <p className="font-semibold text-env-text text-base">
-                  Passionate about engineering fluid, beautiful interfaces.
+                <h4 className="font-semibold text-env-text text-base font-heading">
+                  About
+                </h4>
+                <p className="text-env-muted font-body">
+                  {"I'm a Frontend Engineer working at a leading global technology company, with experience contributing to products used at enterprise scale. Over the years, I've worked on complex platforms handling large volumes of data, where I was involved in both designing solutions and implementing them from the ground up."}
                 </p>
-                <p className="text-env-muted">
-                  Focusing on front-end system performance, clean component boundaries, and interactive design layouts. Experienced in translating strict design parameters into modular, responsive browser modules.
+                <p className="text-env-muted font-body">
+                  {"Beyond my day job, I've built websites and digital experiences for clients across different parts of the world, helped friends bring their ideas online, and spent countless hours experimenting with new technologies, UI patterns, and side projects."}
                 </p>
-                <p className="text-env-muted">
-                  Deep focus on compiler-based React foundations, layout rendering optimisations, web graphics integration, and micro-interaction transitions.
+                <h4 className="font-semibold text-env-text text-base font-heading pt-2">
+                  Personal Life
+                </h4>
+                <p className="text-env-muted font-body">
+                  {"Outside of coding, I'm a gloriously average guitarist, an adventure enthusiast, and someone who's always up for a road trip. Whether it's a hiking trail in the mountains or driving through winding roads at 4,000+ meters above sea level, I rarely say no to an adventure."}
+                </p>
+                <p className="text-env-muted font-body">
+                  {"When life slows down, you'll usually find me writing poetry, enjoying cloudy skies, waiting for the rain, or sitting somewhere quiet with a cup of chai."}
+                </p>
+                <p className="text-env-muted font-body">
+                  {"And yes, there's a good chance I'll write code in exchange for one."}
                 </p>
               </div>
             )}
@@ -237,7 +252,7 @@ export default function Home() {
                       {project.link && (
                         <a href={project.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted">
                           <ExternalLink className="h-3 w-3" />
-                          Live Demo
+                          {"Visit Website →"}
                         </a>
                       )}
                     </div>
@@ -248,26 +263,64 @@ export default function Home() {
 
             {activeNode === "skills" && (
               <div className="space-y-4">
-                <p className="text-env-muted">
+                <p className="text-env-muted font-body">
                   A breakdown of core engineering proficiencies developed over 8 years of production development:
                 </p>
-                <div className="grid gap-3 sm:grid-cols-2 mt-4">
+                <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 mt-4">
+                  {/* Frontend */}
                   <div className="rounded-xl border border-env-border bg-env-text/5 p-4">
-                    <h5 className="font-bold text-env-text text-xs uppercase tracking-wider">Frontend Foundations</h5>
-                    <ul className="mt-2 text-xs text-env-muted space-y-1.5">
-                      <li>• React / Next.js (App Router)</li>
-                      <li>• TypeScript & ESNext</li>
-                      <li>• Tailwind CSS & PostCSS v4</li>
-                      <li>• Framer Motion Transitions</li>
+                    <div className="flex items-center gap-2">
+                      <Code2 className="h-4 w-4 text-env-text" />
+                      <h5 className="font-bold text-env-text text-xs uppercase tracking-wider font-heading">Frontend</h5>
+                    </div>
+                    <ul className="mt-2.5 text-xs text-env-muted space-y-1.5 font-body">
+                      <li>Angular</li>
+                      <li>React</li>
+                      <li>Next.js</li>
+                      <li>TypeScript</li>
+                      <li>JavaScript</li>
+                      <li>HTML5 &amp; CSS3</li>
                     </ul>
                   </div>
+
+                  {/* Backend */}
                   <div className="rounded-xl border border-env-border bg-env-text/5 p-4">
-                    <h5 className="font-bold text-env-text text-xs uppercase tracking-wider">Graphics & Runtimes</h5>
-                    <ul className="mt-2 text-xs text-env-muted space-y-1.5">
-                      <li>• WebGL & Canvas Layouts</li>
-                      <li>• Node.js & Bun Compiler</li>
-                      <li>• Webpack / Turbopack</li>
-                      <li>• Git Workflows & Deployment</li>
+                    <div className="flex items-center gap-2">
+                      <Server className="h-4 w-4 text-env-text" />
+                      <h5 className="font-bold text-env-text text-xs uppercase tracking-wider font-heading">Backend</h5>
+                    </div>
+                    <ul className="mt-2.5 text-xs text-env-muted space-y-1.5 font-body">
+                      <li>Node.js</li>
+                      <li>Express.js</li>
+                      <li>Python</li>
+                      <li>REST APIs</li>
+                    </ul>
+                  </div>
+
+                  {/* Databases */}
+                  <div className="rounded-xl border border-env-border bg-env-text/5 p-4">
+                    <div className="flex items-center gap-2">
+                      <Database className="h-4 w-4 text-env-text" />
+                      <h5 className="font-bold text-env-text text-xs uppercase tracking-wider font-heading">Databases</h5>
+                    </div>
+                    <ul className="mt-2.5 text-xs text-env-muted space-y-1.5 font-body">
+                      <li>MongoDB</li>
+                      <li>PostgreSQL</li>
+                      <li>SQL</li>
+                    </ul>
+                  </div>
+
+                  {/* Design & Engineering */}
+                  <div className="rounded-xl border border-env-border bg-env-text/5 p-4">
+                    <div className="flex items-center gap-2">
+                      <Palette className="h-4 w-4 text-env-text" />
+                      <h5 className="font-bold text-env-text text-xs uppercase tracking-wider font-heading">Design &amp; Engineering</h5>
+                    </div>
+                    <ul className="mt-2.5 text-xs text-env-muted space-y-1.5 font-body">
+                      <li>Figma</li>
+                      <li>Responsive UI/UX</li>
+                      <li>Performance Optimization</li>
+                      <li>Git &amp; CI/CD</li>
                     </ul>
                   </div>
                 </div>
@@ -276,14 +329,32 @@ export default function Home() {
 
             {activeNode === "work-with-me" && (
               <div className="space-y-4">
-                <p className="font-semibold text-env-text text-base">
-                  Collaboration & Consultations
+                <h4 className="font-semibold text-env-text text-base font-heading">
+                  {"Let's build something great together"}
+                </h4>
+                <p className="text-env-muted font-body">
+                  {"Whether you're launching a new idea, improving an existing product, or growing your business online, I'd be happy to help."}
                 </p>
                 <p className="text-env-muted font-body">
-                  Available for engineering contracts, component system audits, and visual design layout consulting. I build highly optimized, production-ready codebases with clean structures.
+                  {"I work with businesses, startups, entrepreneurs, and creators to build fast, modern, and reliable web experiences. From planning and design discussions to development and launch, I can help turn ideas into products people enjoy using."}
                 </p>
-                <p className="text-env-muted font-body">
-                  If you have a complex frontend layout requirement or web animations scope that needs high visual fidelity and precise layout structure, get in touch to plan a collaboration.
+                
+                <h5 className="font-bold text-env-text text-xs uppercase tracking-wider font-heading pt-2">
+                  {"Things I can help with"}
+                </h5>
+                <ul className="text-xs text-env-muted space-y-4 font-body pl-1">
+                  <li>• Business websites that are designed to convert visitors into customers</li>
+                  <li>• SEO-friendly, mobile-responsive websites</li>
+                  <li>• Product reviews, planning, and consultation before development begins</li>
+                  <li>• UI/UX discussions and guidance on how your product should look and feel</li>
+                  <li>• Analytics integration and insights to help understand user behavior</li>
+                  <li>• Complex and large-scale web applications</li>
+                  <li>• Frontend architecture and performance optimization</li>
+                  <li>• Premium-quality implementations with attention to detail</li>
+                </ul>
+
+                <p className="text-env-muted font-body pt-2">
+                  {"Not sure where to start? That's completely fine. We can begin with a conversation, discuss your goals, answer questions, and figure out the best path forward together."}
                 </p>
               </div>
             )}
@@ -319,9 +390,46 @@ export default function Home() {
                     className="rounded-lg border border-env-border bg-transparent px-3 py-2 text-xs outline-none focus:border-env-text transition-colors text-env-text font-body resize-none"
                   />
                 </div>
+
+                {/* Cloudflare Turnstile Placeholder (Future Compatibility) */}
+                {/* <div id="turnstile-container" className="my-2 flex justify-center" /> */}
+
                 <Button type="submit" className="w-full text-xs font-bold uppercase tracking-widest">
                   Send Message
                 </Button>
+
+                {/* Centered separator spacing */}
+                <div className="flex items-center justify-center gap-4 pt-4 pb-2">
+                  <div className="h-[1px] flex-1 bg-env-border/30" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-env-muted select-none">
+                    Or send me a message
+                  </span>
+                  <div className="h-[1px] flex-1 bg-env-border/30" />
+                </div>
+
+                {/* Centered social icons */}
+                <div className="flex items-center justify-center gap-6 py-1">
+                  <a
+                    href="https://www.linkedin.com/in/rajatdeepsingh2417/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-env-muted hover:text-env-text transition-colors duration-200"
+                    aria-label="LinkedIn"
+                    title="LinkedIn"
+                  >
+                    <LinkedinIcon className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="https://www.instagram.com/hereismyrhyme/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-env-muted hover:text-env-text transition-colors duration-200"
+                    aria-label="Instagram"
+                    title="Instagram"
+                  >
+                    <InstagramIcon className="h-5 w-5" />
+                  </a>
+                </div>
               </form>
             )}
           </EmergingPanel>

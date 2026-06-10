@@ -76,7 +76,7 @@ export function EmergingPanel({ isOpen, onClose, title, children }: EmergingPane
       </div>
 
       {/* Scrollable content container with large breathing room padding */}
-      <div className="max-h-[55vh] md:max-h-[60vh] overflow-y-auto pr-1 text-sm leading-relaxed text-env-text font-body">
+      <div className="max-h-[55vh] md:max-h-[60vh] overflow-y-auto overflow-x-hidden pr-1 text-sm leading-relaxed text-env-text font-body">
         {children}
       </div>
     </div>
