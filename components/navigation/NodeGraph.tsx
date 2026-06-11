@@ -13,7 +13,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Mail,
 };
 
-// Symmetrical and balanced mobile-specific coordinate mapping
+// Symmetrical and balanced mobile-specific coordinate mapping 
 // Coordinates are in SVG units relative to the center of the 600×500 canvas.
 // Explore node radius (mobile) = 72px. Outer node radius = 28px.
 // Minimum clearance between Explore circumference and outer node edge = ~40px at these values.
