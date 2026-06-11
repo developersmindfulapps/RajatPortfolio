@@ -18,6 +18,10 @@
   /* Line Day Adjustments */
   --env-line-filter: drop-shadow(0px 1px 1.5px rgba(0, 0, 0, 0.22));
   --env-line-opacity-idle: 0.38;
+
+  /* Custom Scrollbar */
+  --scrollbar-thumb: rgba(25, 25, 25, 0.18);
+  --scrollbar-thumb-hover: rgba(25, 25, 25, 0.25);
 }
 
 [data-theme="night"] {
@@ -38,6 +42,10 @@
   /* Line Night Adjustments */
   --env-line-filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.7));
   --env-line-opacity-idle: 0.22;
+
+  /* Custom Scrollbar */
+  --scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
 }
 
 [data-theme="sunset"] {
@@ -58,6 +66,10 @@
   /* Line Sunset Adjustments (Opacity increased for visibility) */
   --env-line-filter: drop-shadow(0px 1px 2px rgba(40, 20, 10, 0.65)) drop-shadow(0px 0px 4px rgba(253, 186, 116, 0.3));
   --env-line-opacity-idle: 0.50;
+
+  /* Custom Scrollbar */
+  --scrollbar-thumb: rgba(255, 244, 232, 0.18);
+  --scrollbar-thumb-hover: rgba(255, 244, 232, 0.25);
 }
 
 [data-theme="sunrise"] {
@@ -78,6 +90,10 @@
   /* Line Sunrise Adjustments */
   --env-line-filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.12));
   --env-line-opacity-idle: 0.38;
+
+  /* Custom Scrollbar */
+  --scrollbar-thumb: rgba(17, 24, 39, 0.18);
+  --scrollbar-thumb-hover: rgba(17, 24, 39, 0.25);
 }
 
 @theme {
@@ -179,5 +195,51 @@ h1, h2, h3, h4, h5, h6 {
   --exp-btn-primary-bg: #FFFFFF;
   --exp-btn-primary-text: #2D1914;
 }
+
+/* Custom scrollbar layout (3px Floating Scrollbar) */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+  transition: background 0.15s ease-in-out;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Safe Area Utilities */
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.pl-safe {
+  padding-left: env(safe-area-inset-left);
+}
+.pr-safe {
+  padding-right: env(safe-area-inset-right);
+}
+
+
+
 
 

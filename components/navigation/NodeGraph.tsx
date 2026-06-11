@@ -13,6 +13,16 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Mail,
 };
 
+// Symmetrical and balanced mobile-specific coordinate mapping
+const MOBILE_NODES = [
+  { id: "identity", label: "Explore", iconName: "User", x: 0, y: 0 },
+  { id: "projects", label: "Projects", iconName: "FolderGit", x: 0, y: -125 },
+  { id: "about", label: "About", iconName: "User", x: -110, y: -20 },
+  { id: "skills", label: "Skills", iconName: "Wrench", x: 110, y: -20 },
+  { id: "work-with-me", label: "Work With Me", iconName: "Briefcase", x: -70, y: 90 },
+  { id: "contact", label: "Contact", iconName: "Mail", x: 0, y: 145 },
+];
+
 interface NodeGraphProps {
   activeNodeId: string | null;
   onNodeClick: (nodeId: string) => void;
@@ -28,10 +38,8 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
     const handleResize = () => {
       const w = window.innerWidth;
       setViewportWidth(w);
-      if (w < 640) {
-        setScale(0.55); // Mobile
-      } else if (w < 768) {
-        setScale(0.65); // Small Tablet
+      if (w < 768) {
+        setScale(1.0);  // Mobile coordinates are pre-sized, use scale 1.0
       } else if (w < 1024) {
         setScale(0.8);  // Large Tablet/13" Laptop
       } else if (w < 1536) {
@@ -63,6 +71,9 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
     }
   }, [activeNodeId]);
 
+  const isMobile = viewportWidth < 768;
+  const nodesList = isMobile ? MOBILE_NODES : CONSTELLATION_NODES;
+
   // Viewport-aware horizontal translation calculation
   const translationX = activeNodeId && activeNodeId !== "identity" ? (() => {
     if (viewportWidth < 1024) return 0; // Stacked vertically, keep centered
@@ -78,17 +89,25 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
     // Clamp shift between 0 and desiredDesktopShift
     const shift = Math.max(0, Math.min(desiredDesktopShift, availableHorizontalSpace));
     return -shift;
-  })() : 0;
+  })() : (() => {
+    // When panel is closed: shift slightly to the right (20px to 30px) on 13"-15" screens to balance the fixed left header
+    if (viewportWidth >= 1024 && viewportWidth < 1536) {
+      return 25; // Shift 25px center-right to balance the fixed left header
+    }
+    return 0;
+  })();
 
   return (
     <div 
       className={cn(
-        "relative flex items-center justify-center transition-transform duration-[500ms] ease-in-out z-20"
+        "relative flex items-center justify-center transition-all duration-[500ms] ease-in-out z-20"
       )}
       style={{
         width: `${width}px`,
         height: `${height}px`,
-        transform: `translateX(${translationX}px)`,
+        transform: isMobile
+          ? "translate(0px, 50px)"
+          : `translate(${translationX}px, 0px)`,
       }}
     >
 
@@ -106,8 +125,8 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
           viewBox={`-${width / 2} -${height / 2} ${width} ${height}`}
         >
           {CONSTELLATION_CONNECTIONS.map(([fromId, toId], idx) => {
-            const fromNode = CONSTELLATION_NODES.find((n) => n.id === fromId);
-            const toNode = CONSTELLATION_NODES.find((n) => n.id === toId);
+            const fromNode = nodesList.find((n) => n.id === fromId);
+            const toNode = nodesList.find((n) => n.id === toId);
             
             if (!fromNode || !toNode) return null;
 
@@ -128,15 +147,15 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
               const ux = dx / dist;
               const uy = dy / dist;
 
-              // Explore central node is w-44 (176px wide, radius 88px)
-              const r1 = fromId === "identity" ? 88 : 28;
-              // Target navigation nodes are w-14 (56px wide, radius 28px)
-              const r2 = toId === "identity" ? 88 : 28;
+              // Explore central node is w-44 on desktop (radius 88px), w-36 on mobile (radius 72px)
+              const rExplore = isMobile ? 72 : 88;
 
-              x1 = fromNode.x + ux * r1;
-              y1 = fromNode.y + uy * r1;
-              x2 = toNode.x - ux * r2;
-              y2 = toNode.y - uy * r2;
+              x1 = fromNode.x + ux * rExplore;
+              y1 = fromNode.y + uy * rExplore;
+              
+              // Start directly from the outer node center (radius is 0)
+              x2 = toNode.x;
+              y2 = toNode.y;
             }
 
             return (
@@ -165,25 +184,30 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
         </svg>
 
         {/* Nodes Constellation */}
-        {CONSTELLATION_NODES.map((node) => {
+        {nodesList.map((node) => {
           const isAnchor = node.id === "identity";
           const Icon = ICON_MAP[node.iconName] || Mail;
           const isActive = activeNodeId === node.id;
           const isSomeNodeActive = activeNodeId !== null;
 
           if (isAnchor) {
-            // Central visual anchor node (Explore) - w-44 size, non-interactive, high contrast
+            // Central visual anchor node (Explore) - w-44 on desktop, w-36 on mobile
+            const sizeClass = isMobile ? "h-36 w-36" : "h-44 w-44";
+            const radius = isMobile ? 72 : 88;
             return (
               <div
                 key={node.id}
-                className="absolute z-30 flex h-44 w-44 items-center justify-center rounded-full border border-env-center-border bg-env-center-bg p-1.5 shadow-sm transition-env duration-[700ms]"
+                className={cn(
+                  "absolute z-30 flex items-center justify-center rounded-full border border-env-center-border bg-env-center-bg p-1.5 shadow-sm transition-env duration-[700ms]",
+                  sizeClass
+                )}
                 style={{
-                  left: `calc(50% + ${node.x}px - 88px)`,
-                  top: `calc(50% + ${node.y}px - 88px)`,
+                  left: `calc(50% + ${node.x}px - ${radius}px)`,
+                  top: `calc(50% + ${node.y}px - ${radius}px)`,
                   backdropFilter: "blur(var(--env-blur))",
                 }}
               >
-                <div className="flex flex-col items-center justify-center text-center h-full w-full rounded-full border border-env-center-border/40 p-4 gap-0.5">
+                <div className="flex flex-col items-center justify-center text-center h-full w-full rounded-full border border-env-center-border/40 p-2 md:p-4 gap-0.5">
                   <span className="text-[13px] font-extrabold uppercase tracking-widest text-env-center-text select-none font-heading antialiased leading-none">
                     Explore
                   </span>
@@ -196,8 +220,11 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
           }
 
           // Navigation Nodes - w-14 h-14, font weight 600, high contrast crisp rendering
-          const labelPosition = 
-            node.id === "contact"
+          const labelPosition = isMobile
+            ? (node.id === "projects" || node.id === "about" || node.id === "skills")
+              ? "bottom-16 left-1/2 -translate-x-1/2 text-center mb-1 w-24"
+              : "top-16 left-1/2 -translate-x-1/2 text-center mt-1 w-24"
+            : node.id === "contact"
               ? "top-16 left-1/2 -translate-x-1/2 text-center mt-1 w-28"
               : node.x < 0 
                 ? "right-16 top-1/2 -translate-y-1/2 text-right mr-3 w-32" 

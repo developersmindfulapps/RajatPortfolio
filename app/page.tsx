@@ -11,6 +11,7 @@ import { PROJECTS } from "@/lib/projects";
 import { Project, SocialLink } from "@/types/portfolio";
 import { GithubIcon, LinkedinIcon, InstagramIcon } from "@/components/shared/Icons";
 import { ExternalLink, Code2, Server, Database, Palette } from "lucide-react";
+import { SceneSelector } from "@/components/navigation/SceneSelector";
 
 /*
 TODO: Future project: "UX Design Gallery"
@@ -98,9 +99,11 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen w-full flex flex-col justify-between p-6">
-      
+      {/* Desktop Scene Selector */}
+      <SceneSelector className="hidden md:block fixed top-6 right-6" />
+
       {/* Top Left: Title & Branding */}
-      <header className="fixed top-0 left-0 pt-10 md:pt-12 lg:pt-16 pl-6 md:pl-8 lg:pl-10 z-40 max-w-[360px] sm:max-w-md md:max-w-lg select-none pointer-events-none flex flex-col gap-1 md:gap-1.5">
+      <header className="relative md:fixed top-0 left-0 pt-[calc(env(safe-area-inset-top)+2rem)] md:pt-12 lg:pt-16 pl-6 md:pl-8 lg:pl-10 z-40 max-w-[360px] sm:max-w-md md:max-w-lg select-none pointer-events-none flex flex-col gap-1 md:gap-1.5">
         <h1 className="text-xl md:text-2xl lg:text-3xl font-extrabold tracking-widest text-env-text uppercase font-heading leading-none pointer-events-auto text-shadow-env">
           Rajat Deep Singh
         </h1>
@@ -114,6 +117,11 @@ export default function Home() {
           Space • Airplanes • Poetry • Rock Music
         </p>
         
+        {/* Mobile Scene Selector - positioned between interests text and action buttons */}
+        <div className="md:hidden flex justify-center w-full mt-4 mb-2 pointer-events-auto">
+          <SceneSelector className="relative top-auto left-auto translate-x-0" />
+        </div>
+
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-3 mt-3 pointer-events-auto">
           {/* Primary CTA (Filled) */}
@@ -141,15 +149,10 @@ export default function Home() {
             View Experience
           </Link>
         </div>
-
-        {/* Constellation Onboarding Guidance Hint */}
-        <p className="text-[10px] md:text-xs text-env-muted font-semibold tracking-wide mt-2 md:mt-3 pointer-events-auto text-shadow-env select-none">
-          Explore my work through the interactive constellation.
-        </p>
       </header>
 
       {/* Center Layout: Constellation & Emerging Plaque Panel (Master-Detail) */}
-      <div id="layout-container" className="flex-1 flex items-center justify-center pt-56 pb-20 md:py-0 relative">
+      <div id="layout-container" className="flex-1 flex items-center justify-center pt-8 pb-20 md:py-0 relative">
         
         {/* Architectural Node -> Panel Connector Line */}
         {activeNode && activeNode !== "identity" && nodeCoords && panelCoords && (() => {
@@ -449,7 +452,7 @@ export default function Home() {
       </div>
 
       {/* Bottom Center: Floating Footer Pill (GitHub • LinkedIn • Email) */}
-      <footer className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center justify-center select-none pb-safe">
+      <footer className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center justify-center select-none pb-safe transition-all duration-300 ${activeNode && activeNode !== "identity" ? "hidden md:flex" : "flex"}`}>
         <div 
           className="flex items-center gap-3 rounded-full border border-env-border/40 bg-env-surface/80 px-6 py-2.5 shadow-sm transition-env duration-[700ms]"
           style={{

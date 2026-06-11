@@ -5,10 +5,12 @@ import Link from "next/link";
 import { ArrowLeft, Briefcase, Cpu, Users, ClipboardList } from "lucide-react";
 import { Card } from "@/components/shared/Card";
 import { Transition } from "@/components/shared/Transition";
+import { SceneSelector } from "@/components/navigation/SceneSelector";
 
 export default function ExperiencePage() {
   return (
-    <div className="experience-page-container min-h-screen w-full flex flex-col items-center justify-start p-6 md:p-12 lg:p-16 relative z-10 pt-28">
+    <div className="experience-page-container h-[100dvh] overflow-y-auto overflow-x-hidden w-full flex flex-col items-center justify-start p-6 md:p-12 lg:p-16 relative z-10 pt-[calc(env(safe-area-inset-top)+7rem)] custom-scrollbar">
+      <SceneSelector className="absolute top-[calc(env(safe-area-inset-top)+1rem)] left-1/2 -translate-x-1/2 md:fixed md:top-6 md:right-6 md:left-auto md:translate-x-0" />
       
       {/* Top Navigation Row */}
       <Transition type="fade" duration={0.6} className="w-full max-w-4xl">

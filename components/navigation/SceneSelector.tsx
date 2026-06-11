@@ -12,7 +12,11 @@ const THEME_OPTIONS: { value: EnvironmentTheme; label: string; icon: string }[] 
   { value: "sunrise", label: "Sunrise", icon: "🌄" },
 ];
 
-export function SceneSelector() {
+interface SceneSelectorProps {
+  className?: string;
+}
+
+export function SceneSelector({ className }: SceneSelectorProps) {
   const [mounted, setMounted] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<EnvironmentTheme>("day");
 
@@ -44,7 +48,7 @@ export function SceneSelector() {
   }
 
   return (
-    <div className="fixed top-6 right-6 z-50">
+    <div className={cn("z-50 transition-all duration-[350ms] ease-in-out", className)}>
       <div 
         className="flex items-center gap-1 rounded-xl border border-env-border bg-env-surface p-1 shadow-xs transition-env duration-[700ms]"
         style={{

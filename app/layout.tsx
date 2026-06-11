@@ -15,7 +15,6 @@ const inter = Inter({
 });
 
 import { EnvironmentBg } from "@/components/scene/EnvironmentBg";
-import { SceneSelector } from "@/components/navigation/SceneSelector";
 
 export const metadata: Metadata = {
   title: "Personal Portfolio | Professional Work & Projects",
@@ -54,7 +53,6 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-transparent text-env-text">
         <EnvironmentBg>
-          <SceneSelector />
           {children}
         </EnvironmentBg>
       </body>

@@ -14,6 +14,25 @@ interface EmergingPanelProps {
 export function EmergingPanel({ isOpen, onClose, title, children }: EmergingPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
+  // Auto-scroll panel into viewport on mobile when it opens (layout resilient)
+  useEffect(() => {
+    if (isOpen) {
+      let animFrameId: number;
+      const doScroll = () => {
+        if (window.innerWidth < 768 && panelRef.current) {
+          panelRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      };
+      
+      // requestAnimationFrame scheduled twice to ensure DOM has updated and layout is finalized
+      animFrameId = requestAnimationFrame(() => {
+        animFrameId = requestAnimationFrame(doScroll);
+      });
+
+      return () => cancelAnimationFrame(animFrameId);
+    }
+  }, [isOpen]);
+
   // Click outside to collapse panel
   useEffect(() => {
     if (!isOpen) return;
@@ -37,9 +56,10 @@ export function EmergingPanel({ isOpen, onClose, title, children }: EmergingPane
   return (
     <div
       ref={panelRef}
+      id="emerging-panel-container"
       className={cn(
         // Constrained width to 35-40% of viewport width on desktop (38vw)
-        "w-full md:w-[38vw] max-w-[540px] border border-env-border bg-env-surface p-8 md:p-10 shadow-xs rounded-3xl z-40 relative",
+        "w-full md:w-[38vw] max-w-[540px] border border-env-border bg-env-surface p-8 md:p-10 shadow-xs rounded-3xl z-40 relative scroll-mt-[calc(env(safe-area-inset-top)+1.5rem)]",
         // Cinematic Delayed Emergence Animation (700ms transition, 500ms delay when opening)
         "transition-all duration-[700ms] ease-in-out",
         isOpen
@@ -75,8 +95,10 @@ export function EmergingPanel({ isOpen, onClose, title, children }: EmergingPane
         </button>
       </div>
 
-      {/* Scrollable content container with large breathing room padding */}
-      <div className="max-h-[55vh] md:max-h-[60vh] overflow-y-auto overflow-x-hidden pr-1 text-sm leading-relaxed text-env-text font-body">
+      {/* Scrollable content container with custom premium scrollbars and dynamic linear masks */}
+      <div 
+        className="max-h-[55vh] md:max-h-[60vh] overflow-y-auto overflow-x-hidden pr-1.5 text-sm leading-relaxed text-env-text font-body custom-scrollbar"
+      >
         {children}
       </div>
     </div>
