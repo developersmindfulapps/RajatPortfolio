@@ -14,13 +14,17 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 // Symmetrical and balanced mobile-specific coordinate mapping
+// Coordinates are in SVG units relative to the center of the 600×500 canvas.
+// Explore node radius (mobile) = 72px. Outer node radius = 28px.
+// Minimum clearance between Explore circumference and outer node edge = ~40px at these values.
 const MOBILE_NODES = [
-  { id: "identity", label: "Explore", iconName: "User", x: 0, y: 0 },
-  { id: "projects", label: "Projects", iconName: "FolderGit", x: 0, y: -125 },
-  { id: "about", label: "About", iconName: "User", x: -110, y: -20 },
-  { id: "skills", label: "Skills", iconName: "Wrench", x: 110, y: -20 },
-  { id: "work-with-me", label: "Work With Me", iconName: "Briefcase", x: -70, y: 90 },
-  { id: "contact", label: "Contact", iconName: "Mail", x: 0, y: 145 },
+  { id: "identity",     label: "Explore",      iconName: "User",      x:    0, y:    0 },
+  { id: "projects",    label: "Projects",     iconName: "FolderGit", x:    0, y: -160 },
+  { id: "about",       label: "About",        iconName: "User",      x: -140, y:  -25 },
+  { id: "skills",      label: "Skills",       iconName: "Wrench",    x:  140, y:  -25 },
+  // Bottom nodes spread horizontally — mirrors About/Skills pattern, avoids vertical stacking
+  { id: "work-with-me", label: "Work With Me", iconName: "Briefcase", x:  -95, y:  125 },
+  { id: "contact",     label: "Contact",      iconName: "Mail",      x:   95, y:  125 },
 ];
 
 interface NodeGraphProps {
@@ -54,7 +58,7 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
   }, []);
 
   const width = 600;
-  const height = 450;
+  const height = viewportWidth < 768 ? 520 : 450; // Taller on mobile to contain Contact's label
 
   // Cinematic connector growing state
   const [lineGrow, setLineGrow] = useState(false);
@@ -106,7 +110,7 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
         width: `${width}px`,
         height: `${height}px`,
         transform: isMobile
-          ? "translate(0px, 50px)"
+          ? "translate(0px, 22px)"   // Slightly lower than hero — reduced from 50px
           : `translate(${translationX}px, 0px)`,
       }}
     >
@@ -174,10 +178,12 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
                     ? 1.0 
                     : isHovered 
                       ? 0.6 
-                      : "var(--env-line-opacity-idle)", // Idle opacity loaded from CSS variables
+                      : isMobile
+                        ? 0.48  // Slightly elevated visibility on mobile for touch clarity
+                        : "var(--env-line-opacity-idle)",
                 }}
                 strokeDasharray="3 3"
-                strokeWidth={isActive ? "2.2" : isHovered ? "1.8" : "1.2"}
+                strokeWidth={isActive ? "2.2" : isHovered ? "1.8" : isMobile ? "1.5" : "1.2"}
               />
             );
           })}
@@ -222,8 +228,10 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
           // Navigation Nodes - w-14 h-14, font weight 600, high contrast crisp rendering
           const labelPosition = isMobile
             ? (node.id === "projects" || node.id === "about" || node.id === "skills")
-              ? "bottom-16 left-1/2 -translate-x-1/2 text-center mb-1 w-24"
-              : "top-16 left-1/2 -translate-x-1/2 text-center mt-1 w-24"
+              // Top-side nodes: labels sit ABOVE the icon — reduce gap by shrinking bottom offset
+              ? "bottom-14 left-1/2 -translate-x-1/2 text-center w-24"
+              // Bottom nodes: labels sit BELOW the icon — reduce gap by shrinking top offset
+              : "top-14 left-1/2 -translate-x-1/2 text-center w-24"
             : node.id === "contact"
               ? "top-16 left-1/2 -translate-x-1/2 text-center mt-1 w-28"
               : node.x < 0 
@@ -241,17 +249,24 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
                 "absolute z-20 flex h-14 w-14 items-center justify-center rounded-full border cursor-pointer select-none",
                 // Hover: 150ms transition. Active state toggle: 250ms transition
                 "transition-all duration-[250ms] hover:duration-[150ms] ease-in-out",
-                // Hollow visual configs
+                // Hollow visual configs — mobile gets stronger frosted-glass and border contrast
                 isActive
                   ? "bg-env-text/10 border-env-text scale-110 shadow-xs"
-                  : "bg-transparent border-env-border hover:border-env-text hover:shadow-xs",
+                  : isMobile
+                    ? "bg-env-surface/30 border-env-text/30 hover:border-env-text hover:shadow-xs"
+                    : "bg-transparent border-env-border hover:border-env-text hover:shadow-xs",
                 // Opacity mute when another node is active
                 isSomeNodeActive && !isActive ? "opacity-35 hover:opacity-75" : "opacity-100"
               )}
               style={{
                 left: `calc(50% + ${node.x}px - 28px)`,
                 top: `calc(50% + ${node.y}px - 28px)`,
-                boxShadow: isActive ? "var(--env-glow)" : "none",
+                boxShadow: isActive
+                  ? "var(--env-glow)"
+                  : isMobile
+                    ? "0 2px 8px rgba(0,0,0,0.12), 0 0 0 0.5px var(--env-border)"
+                    : "none",
+                backdropFilter: isMobile ? "blur(8px)" : undefined,
               }}
             >
               <Icon 
@@ -264,6 +279,8 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
               <span 
                 className={cn(
                   "absolute text-sm font-semibold uppercase tracking-widest text-shadow-env select-none pointer-events-none transition-all duration-[250ms] antialiased text-env-text",
+                  // Prevent Work With Me wrapping on mobile — it must stay on one line
+                  isMobile && node.id === "work-with-me" ? "whitespace-nowrap" : "",
                   labelPosition
                 )}
               >

@@ -102,46 +102,52 @@ export default function Home() {
       {/* Desktop Scene Selector */}
       <SceneSelector className="hidden md:block fixed top-6 right-6" />
 
-      {/* Top Left: Title & Branding */}
-      <header className="relative md:fixed top-0 left-0 pt-[calc(env(safe-area-inset-top)+2rem)] md:pt-12 lg:pt-16 pl-6 md:pl-8 lg:pl-10 z-40 max-w-[360px] sm:max-w-md md:max-w-lg select-none pointer-events-none flex flex-col gap-1 md:gap-1.5">
-        <h1 className="text-xl md:text-2xl lg:text-3xl font-extrabold tracking-widest text-env-text uppercase font-heading leading-none pointer-events-auto text-shadow-env">
+      {/* Top: Title & Branding — centered on mobile, fixed top-left on desktop */}
+      <header className="relative md:fixed top-0 left-0 pt-[calc(env(safe-area-inset-top)+2rem)] md:pt-12 lg:pt-16 px-6 md:pl-8 md:pr-0 lg:pl-10 z-40 w-full md:max-w-lg select-none pointer-events-none flex flex-col items-center md:items-start gap-1 md:gap-1.5">
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-extrabold tracking-widest text-env-text uppercase font-heading leading-none pointer-events-auto text-shadow-env text-center md:text-left">
           Rajat Deep Singh
         </h1>
-        <p className="text-xs md:text-sm lg:text-base font-extrabold tracking-widest text-env-text uppercase font-heading pointer-events-auto text-shadow-env leading-snug">
+        <p className="text-xs md:text-sm lg:text-base font-extrabold tracking-widest text-env-text uppercase font-heading pointer-events-auto text-shadow-env leading-snug text-center md:text-left">
           Senior Frontend Engineer
         </p>
-        <p className="text-xs md:text-sm lg:text-base text-env-text/90 font-bold tracking-wider pointer-events-auto text-shadow-env leading-normal">
+        <p className="text-xs md:text-sm lg:text-base text-env-text/90 font-bold tracking-wider pointer-events-auto text-shadow-env leading-normal text-center md:text-left">
           Angular • React • Next.js • Node.js • and more
         </p>
-        <p className="text-xs md:text-sm text-env-muted font-semibold italic tracking-wider pointer-events-auto text-shadow-env leading-normal">
+        <p className="text-xs md:text-sm text-env-muted font-semibold italic tracking-wider pointer-events-auto text-shadow-env leading-normal text-center md:text-left">
           Space • Airplanes • Poetry • Rock Music
         </p>
         
-        {/* Mobile Scene Selector - positioned between interests text and action buttons */}
-        <div className="md:hidden flex justify-center w-full mt-4 mb-2 pointer-events-auto">
+        {/* Mobile Scene Selector - centered between interests text and action buttons */}
+        <div className="md:hidden flex justify-center w-full mt-4 mb-1 pointer-events-auto">
           <SceneSelector className="relative top-auto left-auto translate-x-0" />
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3 mt-3 pointer-events-auto">
-          {/* Primary CTA (Filled) */}
-          <a
-            href="/cv/RajatCvJune.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-lg bg-env-text px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-surface hover:opacity-90 transition-all duration-[250ms] ease-in-out select-none shadow-xs hover:scale-[1.02] focus:ring-2 focus:ring-env-text focus:ring-offset-2 outline-none"
-          >
-            View Resume
-          </a>
-          {/* Secondary CTA (Outlined & Frosted) */}
-          <a
-            href="/cv/RajatCvJune.pdf"
-            download="Rajat_Deep_Singh_CV.pdf"
-            className="inline-flex items-center justify-center rounded-lg border border-env-border bg-env-surface/20 backdrop-blur-xs px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-text hover:bg-env-surface/40 hover:border-env-text transition-all duration-[250ms] ease-in-out select-none hover:scale-[1.02] focus:ring-2 focus:ring-env-border focus:ring-offset-2 outline-none"
-          >
-            Download CV
-          </a>
-          {/* Tertiary CTA (Outlined & Frosted) - Link to Experience page */}
+        {/* Action Buttons
+             Mobile:  pyramid layout — [View Resume] [Download CV] on row 1, [View Experience] centered below
+             Desktop: unchanged horizontal flex-wrap
+        */}
+        <div className="mt-2 md:mt-3 pointer-events-auto w-full flex flex-col items-center gap-2 md:flex-row md:flex-wrap md:gap-3">
+          {/* Row 1: two buttons side-by-side on mobile */}
+          <div className="flex gap-2 md:contents">
+            {/* Primary CTA (Filled) */}
+            <a
+              href="/cv/RajatCvJune.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-lg bg-env-text px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-surface hover:opacity-90 transition-all duration-[250ms] ease-in-out select-none shadow-xs hover:scale-[1.02] focus:ring-2 focus:ring-env-text focus:ring-offset-2 outline-none"
+            >
+              View Resume
+            </a>
+            {/* Secondary CTA (Outlined & Frosted) */}
+            <a
+              href="/cv/RajatCvJune.pdf"
+              download="Rajat_Deep_Singh_CV.pdf"
+              className="inline-flex items-center justify-center rounded-lg border border-env-border bg-env-surface/20 backdrop-blur-xs px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-text hover:bg-env-surface/40 hover:border-env-text transition-all duration-[250ms] ease-in-out select-none hover:scale-[1.02] focus:ring-2 focus:ring-env-border focus:ring-offset-2 outline-none"
+            >
+              Download CV
+            </a>
+          </div>
+          {/* Row 2: View Experience centered below — pyramid apex */}
           <Link
             href="/experience"
             className="inline-flex items-center justify-center rounded-lg border border-env-border bg-env-surface/20 backdrop-blur-xs px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-text hover:bg-env-surface/40 hover:border-env-text transition-all duration-[250ms] ease-in-out select-none hover:scale-[1.02] focus:ring-2 focus:ring-env-border focus:ring-offset-2 outline-none"
@@ -452,9 +458,9 @@ export default function Home() {
       </div>
 
       {/* Bottom Center: Floating Footer Pill (GitHub • LinkedIn • Email) */}
-      <footer className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center justify-center select-none pb-safe transition-all duration-300 ${activeNode && activeNode !== "identity" ? "hidden md:flex" : "flex"}`}>
+      <footer className={`fixed bottom-[6px] left-1/2 -translate-x-1/2 z-40 flex items-center justify-center select-none pb-safe transition-all duration-300 ${activeNode && activeNode !== "identity" ? "hidden md:flex" : "flex"}`}>
         <div 
-          className="flex items-center gap-3 rounded-full border border-env-border/40 bg-env-surface/80 px-6 py-2.5 shadow-sm transition-env duration-[700ms]"
+          className="flex items-center gap-2 md:gap-3 rounded-full border border-env-border/40 bg-env-surface/80 px-4 md:px-6 py-1.5 md:py-2.5 shadow-sm transition-env duration-[700ms]"
           style={{
             backdropFilter: "blur(24px)",
             boxShadow: "0 0 16px var(--env-border), var(--env-shadow)",
