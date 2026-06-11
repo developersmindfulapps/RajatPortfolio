@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 const dmSans = DM_Sans({
   variable: "--font-heading",
@@ -55,6 +57,8 @@ export default function RootLayout({
         <EnvironmentBg>
           {children}
         </EnvironmentBg>
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
