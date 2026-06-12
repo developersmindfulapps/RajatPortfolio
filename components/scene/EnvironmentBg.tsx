@@ -1,8 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
+
+import { DayAtmosphere, SunriseAtmosphere, SunsetAtmosphere, NightAtmosphere } from "./AtmosphereLayers";
 
 type EnvironmentTheme = "day" | "night" | "sunset" | "sunrise";
+
+// Module-level cache to track loaded themes and prevent unmounting/re-downloading
+const loadedThemeCache = new Set<EnvironmentTheme>();
 
 export function EnvironmentBg({ children }: { children: React.ReactNode }) {
   const [activeTheme, setActiveTheme] = useState<EnvironmentTheme>("day");
@@ -36,27 +42,44 @@ export function EnvironmentBg({ children }: { children: React.ReactNode }) {
     return () => observer.disconnect();
   }, []);
 
+  // Ensure active theme is immediately marked as loaded
+  loadedThemeCache.add(activeTheme);
+
   const themes: EnvironmentTheme[] = ["day", "night", "sunset", "sunrise"];
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden">
       {/* Absolute background fader stack */}
       <div className="fixed inset-0 -z-20 pointer-events-none h-full w-full overflow-hidden bg-zinc-950">
-        {themes.map((t) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={t}
-            src={`/scenes/${t}/bg.png`}
-            alt=""
-            aria-hidden="true"
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out ${
-              activeTheme === t ? "opacity-100" : "opacity-0"
-            }`}
-            style={{
-              transform: "translate3d(0,0,0)", // hardware acceleration
-            }}
-          />
-        ))}
+        {themes.map((t) => {
+          const isLoaded = loadedThemeCache.has(t);
+          return (
+            <div
+              key={t}
+              className={`absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-700 ease-in-out ${
+                activeTheme === t ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {isLoaded && (
+                <>
+                  <Image
+                    src={`/scenes/${t}/bg.avif`}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    priority={activeTheme === t}
+                    className="object-cover"
+                  />
+                  {/* Atmosphere layers positioned between bg image and UI content */}
+                  {t === "day" && <DayAtmosphere />}
+                  {t === "sunrise" && <SunriseAtmosphere />}
+                  {t === "sunset" && <SunsetAtmosphere />}
+                  {t === "night" && <NightAtmosphere />}
+                </>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* Main content wrapper */}

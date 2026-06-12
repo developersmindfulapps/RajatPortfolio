@@ -239,6 +239,126 @@ h1, h2, h3, h4, h5, h6 {
   padding-right: env(safe-area-inset-right);
 }
 
+/* Background Atmosphere Enhancements */
+
+/* Clouds Drift Keyframes */
+@keyframes drift-clouds-right {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+.animate-drift-clouds-day {
+  animation: drift-clouds-right 480s linear infinite;
+}
+
+.animate-drift-clouds-sunrise {
+  animation: drift-clouds-right 540s linear infinite;
+}
+
+.animate-drift-clouds-sunset {
+  animation: drift-clouds-right 600s linear infinite;
+}
+
+/* Bird Flying Keyframes */
+@keyframes fly-across-right {
+  0% {
+    transform: translate3d(-20vw, 0, 0) scale(var(--bird-scale, 0.4));
+    opacity: 0;
+  }
+  5% {
+    opacity: var(--bird-opacity, 0.35);
+  }
+  95% {
+    opacity: var(--bird-opacity, 0.35);
+  }
+  100% {
+    transform: translate3d(120vw, var(--bird-y-diff, -30px), 0) scale(var(--bird-scale, 0.4));
+    opacity: 0;
+  }
+}
+
+.bird-element {
+  background-image: url('/scenes/day/birds.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Sunset Particles Floating (Slow upward drift + subtle sway) */
+@keyframes float-particles-sunset {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(20px, -50vh, 0);
+  }
+  100% {
+    transform: translate3d(0, -100vh, 0);
+  }
+}
+
+.animate-float-particles-sunset {
+  animation: float-particles-sunset 140s ease-in-out infinite;
+}
+
+/* Night Particles Floating (Even slower, sparse drift) */
+@keyframes float-particles-night {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-15px, -50vh, 0);
+  }
+  100% {
+    transform: translate3d(0, -100vh, 0);
+  }
+}
+
+.animate-float-particles-night {
+  animation: float-particles-night 200s ease-in-out infinite;
+}
+
+/* Twinkling Stars (Slow brightness variation, no blinking) */
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: 0.12;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 0.70;
+    transform: scale(1.15);
+  }
+}
+
+.animate-star-twinkle {
+  animation: star-twinkle var(--twinkle-duration, 8s) ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
+}
+
+/* Accessibility: Support prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift-clouds-day,
+  .animate-drift-clouds-sunrise,
+  .animate-drift-clouds-sunset,
+  .bird-element,
+  .animate-float-particles-sunset,
+  .animate-float-particles-night,
+  .animate-star-twinkle {
+    animation: none !important;
+    transform: none !important;
+    opacity: 0.1 !important;
+  }
+}
+
+
 
 
 
