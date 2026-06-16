@@ -52,13 +52,11 @@ export default function Home() {
       const anchorRect = anchorEl.getBoundingClientRect();
 
       setNodeCoords({
-        // Capture exact point on right edge of node circumference in container space
         x: nodeRect.left + nodeRect.width - containerRect.left,
         y: nodeRect.top + nodeRect.height / 2 - containerRect.top,
       });
 
       setPanelCoords({
-        // Center of the panel anchor dot in container space
         x: anchorRect.left + anchorRect.width / 2 - containerRect.left,
         y: anchorRect.top + anchorRect.height / 2 - containerRect.top,
       });
