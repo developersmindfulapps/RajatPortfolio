@@ -12,6 +12,7 @@ import { Project, SocialLink } from "@/types/portfolio";
 import { GithubIcon, LinkedinIcon, InstagramIcon } from "@/components/shared/Icons";
 import { ExternalLink, Code2, Server, Database, Palette } from "lucide-react";
 import { SceneSelector } from "@/components/navigation/SceneSelector";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 /*
 TODO: Future project: "UX Design Gallery"
@@ -379,46 +380,11 @@ export default function Home() {
             )}
 
             {activeNode === "contact" && (
-              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="name" className="text-[10px] font-bold uppercase tracking-widest text-env-muted">Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      required
-                      className="rounded-lg border border-env-border bg-transparent px-3 py-2 text-xs outline-none focus:border-env-text transition-colors text-env-text font-body"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest text-env-muted">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      required
-                      className="rounded-lg border border-env-border bg-transparent px-3 py-2 text-xs outline-none focus:border-env-text transition-colors text-env-text font-body"
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="message" className="text-[10px] font-bold uppercase tracking-widest text-env-muted">Message</label>
-                  <textarea
-                    id="message"
-                    required
-                    rows={4}
-                    className="rounded-lg border border-env-border bg-transparent px-3 py-2 text-xs outline-none focus:border-env-text transition-colors text-env-text font-body resize-none"
-                  />
-                </div>
-
-                {/* Cloudflare Turnstile Placeholder (Future Compatibility) */}
-                {/* <div id="turnstile-container" className="my-2 flex justify-center" /> */}
-
-                <Button type="submit" className="w-full text-xs font-bold uppercase tracking-widest">
-                  Send Message
-                </Button>
+              <div className="space-y-4">
+                <ContactForm />
 
                 {/* Centered separator spacing */}
-                <div className="flex items-center justify-center gap-4 pt-4 pb-2">
+                <div className="flex items-center justify-center gap-4 pt-2 pb-2">
                   <div className="h-[1px] flex-1 bg-env-border/30" />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-env-muted select-none">
                     Or send me a message
@@ -449,7 +415,7 @@ export default function Home() {
                     <InstagramIcon className="h-5 w-5" />
                   </a>
                 </div>
-              </form>
+              </div>
             )}
           </EmergingPanel>
         </div>
