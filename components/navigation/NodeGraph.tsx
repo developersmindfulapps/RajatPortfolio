@@ -5,7 +5,7 @@ import { User, FolderGit, Wrench, Briefcase, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CONSTELLATION_NODES, CONSTELLATION_CONNECTIONS } from "@/lib/constellation";
 
-const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
   User,
   FolderGit,
   Wrench,
@@ -27,6 +27,8 @@ const MOBILE_NODES = [
   { id: "contact",     label: "Contact",      iconName: "Mail",      x:   95, y:  125 },
 ];
 
+type EnvironmentTheme = "day" | "night" | "sunset" | "sunrise";
+
 interface NodeGraphProps {
   activeNodeId: string | null;
   onNodeClick: (nodeId: string) => void;
@@ -36,6 +38,30 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
   const [scale, setScale] = useState(1);
   const [viewportWidth, setViewportWidth] = useState(1200);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
+  const [activeTheme, setActiveTheme] = useState<EnvironmentTheme>("day");
+
+  useEffect(() => {
+    // 1. Read initial theme from document root attribute
+    const current = document.documentElement.getAttribute("data-theme") as EnvironmentTheme;
+    if (current && ["day", "night", "sunset", "sunrise"].includes(current)) {
+      setActiveTheme(current);
+    }
+
+    // 2. Set up MutationObserver to react to updates on document root
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "data-theme") {
+          const next = document.documentElement.getAttribute("data-theme") as EnvironmentTheme;
+          if (next && ["day", "night", "sunset", "sunrise"].includes(next)) {
+            setActiveTheme(next);
+          }
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
 
   // Responsive scaling to preserve visual composition on all viewports
   useEffect(() => {
@@ -77,6 +103,7 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
 
   const isMobile = viewportWidth < 768;
   const nodesList = isMobile ? MOBILE_NODES : CONSTELLATION_NODES;
+  const isDayOrSunrise = activeTheme === "day" || activeTheme === "sunrise";
 
   // Viewport-aware horizontal translation calculation
   const translationX = activeNodeId && activeNodeId !== "identity" ? (() => {
@@ -123,6 +150,16 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
           transform: `scale(${scale})`,
         }}
       >
+        {/* Subtle radial backdrop behind the constellation for Day and Sunrise themes */}
+        {isDayOrSunrise && (
+          <div
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            style={{
+              background: "radial-gradient(circle, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.06) 35%, rgba(0,0,0,0.00) 70%)",
+              pointerEvents: "none",
+            }}
+          />
+        )}
         {/* Permanent connector lines SVG */}
         <svg 
           className="absolute inset-0 pointer-events-none w-full h-full overflow-visible"
@@ -162,6 +199,26 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
               y2 = toNode.y;
             }
 
+            const isLineIdle = !isActive && !isHovered;
+
+            const lineFilter = isDayOrSunrise && isLineIdle
+              ? "drop-shadow(0 0 3px rgba(0,0,0,0.45))"
+              : "var(--env-line-filter)";
+
+            const lineOpacity = isDayOrSunrise && isLineIdle
+              ? 1.0
+              : (isActive 
+                ? 1.0 
+                : isHovered 
+                  ? 0.6 
+                  : isMobile
+                    ? 0.48  // Slightly elevated visibility on mobile for touch clarity
+                    : "var(--env-line-opacity-idle)");
+
+            const lineStroke = isDayOrSunrise && isLineIdle
+              ? "rgba(255,255,255,0.75)"
+              : undefined;
+
             return (
               <line
                 key={idx}
@@ -170,17 +227,14 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
                 x2={x2}
                 y2={y2}
                 className={cn(
-                  "stroke-env-text transition-all duration-[250ms] ease-in-out"
+                  "stroke-env-text transition-all duration-[250ms] ease-in-out constellation-line",
+                  isActive && "active",
+                  isHovered && "hovered"
                 )}
                 style={{
-                  filter: "var(--env-line-filter)",
-                  opacity: isActive 
-                    ? 1.0 
-                    : isHovered 
-                      ? 0.6 
-                      : isMobile
-                        ? 0.48  // Slightly elevated visibility on mobile for touch clarity
-                        : "var(--env-line-opacity-idle)",
+                  filter: lineFilter,
+                  opacity: lineOpacity,
+                  stroke: lineStroke,
                 }}
                 strokeDasharray="3 3"
                 strokeWidth={isActive ? "2.2" : isHovered ? "1.8" : isMobile ? "1.5" : "1.2"}
@@ -238,56 +292,71 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
                 ? "right-16 top-1/2 -translate-y-1/2 text-right mr-3 w-32" 
                 : "left-16 top-1/2 -translate-y-1/2 text-left ml-3 w-32";
 
-          return (
-            <button
-              key={node.id}
-              id={`node-${node.id}`}
-              onClick={() => onNodeClick(node.id)}
-              onMouseEnter={() => setHoveredNodeId(node.id)}
-              onMouseLeave={() => setHoveredNodeId(null)}
-              className={cn(
-                "absolute z-20 flex h-14 w-14 items-center justify-center rounded-full border cursor-pointer select-none",
-                // Hover: 150ms transition. Active state toggle: 250ms transition
-                "transition-all duration-[250ms] hover:duration-[150ms] ease-in-out",
-                // Hollow visual configs — mobile gets stronger frosted-glass and border contrast
-                isActive
-                  ? "bg-env-text/10 border-env-text scale-110 shadow-xs"
-                  : isMobile
-                    ? "bg-env-surface/30 border-env-text/30 hover:border-env-text hover:shadow-xs"
-                    : "bg-transparent border-env-border hover:border-env-text hover:shadow-xs",
-                // Opacity mute when another node is active
-                isSomeNodeActive && !isActive ? "opacity-35 hover:opacity-75" : "opacity-100"
-              )}
-              style={{
-                left: `calc(50% + ${node.x}px - 28px)`,
-                top: `calc(50% + ${node.y}px - 28px)`,
-                boxShadow: isActive
-                  ? "var(--env-glow)"
-                  : isMobile
-                    ? "0 2px 8px rgba(0,0,0,0.12), 0 0 0 0.5px var(--env-border)"
-                    : "none",
-                backdropFilter: isMobile ? "blur(8px)" : undefined,
-              }}
-            >
-              <Icon 
+            const isNodeIdle = !isActive && hoveredNodeId !== node.id;
+            const iconStyle = isDayOrSunrise && isNodeIdle ? {
+              color: "rgba(255, 255, 255, 0.95)",
+              filter: "drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6))",
+            } : undefined;
+
+            const labelStyle = isDayOrSunrise && isNodeIdle ? {
+              color: "rgba(255, 255, 255, 0.95)",
+              textShadow: "0 1px 3px rgba(0, 0, 0, 0.75), 0 2px 8px rgba(0, 0, 0, 0.45)",
+            } : undefined;
+
+            return (
+              <button
+                key={node.id}
+                id={`node-${node.id}`}
+                onClick={() => onNodeClick(node.id)}
+                onMouseEnter={() => setHoveredNodeId(node.id)}
+                onMouseLeave={() => setHoveredNodeId(null)}
                 className={cn(
-                  "h-5 w-5 transition-colors duration-[250ms] ease-in-out antialiased text-env-text"
-                )} 
-              />
-              
-              {/* Scene-aware high-contrast text shadow label with weight 600 */}
-              <span 
-                className={cn(
-                  "absolute text-sm font-semibold uppercase tracking-widest text-shadow-env select-none pointer-events-none transition-all duration-[250ms] antialiased text-env-text",
-                  // Prevent Work With Me wrapping on mobile — it must stay on one line
-                  isMobile && node.id === "work-with-me" ? "whitespace-nowrap" : "",
-                  labelPosition
+                  "absolute z-20 flex h-14 w-14 items-center justify-center rounded-full border cursor-pointer select-none constellation-node",
+                  isActive && "active",
+                  hoveredNodeId === node.id && "hovered",
+                  // Hover: 150ms transition. Active state toggle: 250ms transition
+                  "transition-all duration-[250ms] hover:duration-[150ms] ease-in-out",
+                  // Hollow visual configs — mobile gets stronger frosted-glass and border contrast
+                  isActive
+                    ? "bg-env-text/10 border-env-text scale-110 shadow-xs"
+                    : isMobile
+                      ? "bg-env-surface/30 border-env-text/30 hover:border-env-text hover:shadow-xs"
+                      : "bg-transparent border-env-border hover:border-env-text hover:shadow-xs",
+                  // Opacity mute when another node is active
+                  isSomeNodeActive && !isActive ? "opacity-35 hover:opacity-75" : "opacity-100"
                 )}
+                style={{
+                  left: `calc(50% + ${node.x}px - 28px)`,
+                  top: `calc(50% + ${node.y}px - 28px)`,
+                  boxShadow: isActive
+                    ? "var(--env-glow)"
+                    : isMobile
+                      ? "0 2px 8px rgba(0,0,0,0.12), 0 0 0 0.5px var(--env-border)"
+                      : "none",
+                  backdropFilter: isMobile ? "blur(8px)" : undefined,
+                }}
               >
-                {node.label}
-              </span>
-            </button>
-          );
+                <Icon 
+                  className={cn(
+                    "h-5 w-5 transition-colors duration-[250ms] ease-in-out antialiased text-env-text constellation-icon"
+                  )} 
+                  style={iconStyle}
+                />
+                
+                {/* Scene-aware high-contrast text shadow label with weight 600 */}
+                <span 
+                  className={cn(
+                    "absolute text-sm font-semibold uppercase tracking-widest text-shadow-env select-none pointer-events-none transition-all duration-[250ms] antialiased text-env-text constellation-label",
+                    // Prevent Work With Me wrapping on mobile — it must stay on one line
+                    isMobile && node.id === "work-with-me" ? "whitespace-nowrap" : "",
+                    labelPosition
+                  )}
+                  style={labelStyle}
+                >
+                  {node.label}
+                </span>
+              </button>
+            );
         })}
       </div>
     </div>

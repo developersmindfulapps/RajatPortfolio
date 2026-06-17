@@ -12,6 +12,8 @@ const loadedThemeCache = new Set<EnvironmentTheme>();
 
 export function EnvironmentBg({ children }: { children: React.ReactNode }) {
   const [activeTheme, setActiveTheme] = useState<EnvironmentTheme>("day");
+  // SSR-safe: default false (landscape/desktop), corrected on first client paint
+  const [isPortrait, setIsPortrait] = useState(false);
 
   useEffect(() => {
     // 1. Check initial theme from html attribute or default to day
@@ -42,6 +44,19 @@ export function EnvironmentBg({ children }: { children: React.ReactNode }) {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    // 3. Detect portrait orientation — applies to phones AND portrait tablets
+    //    (iPad, Surface, etc.) regardless of pixel width.
+    const check = () => setIsPortrait(window.innerHeight > window.innerWidth);
+    check(); // run immediately on mount
+    window.addEventListener("resize", check, { passive: true });
+    window.addEventListener("orientationchange", check, { passive: true });
+    return () => {
+      window.removeEventListener("resize", check);
+      window.removeEventListener("orientationchange", check);
+    };
+  }, []);
+
   // Ensure active theme is immediately marked as loaded
   loadedThemeCache.add(activeTheme);
 
@@ -53,6 +68,12 @@ export function EnvironmentBg({ children }: { children: React.ReactNode }) {
       <div className="fixed inset-0 -z-20 pointer-events-none h-full w-full overflow-hidden bg-zinc-950">
         {themes.map((t) => {
           const isLoaded = loadedThemeCache.has(t);
+          // Portrait  → mobile artwork  (phones + portrait tablets)
+          // Landscape → desktop artwork (landscape tablets + desktops)
+          const bgSrc = isPortrait
+            ? `/scenes/${t}/bg_mobile.avif`
+            : `/scenes/${t}/bg.avif`;
+
           return (
             <div
               key={t}
@@ -63,7 +84,7 @@ export function EnvironmentBg({ children }: { children: React.ReactNode }) {
               {isLoaded && (
                 <>
                   <Image
-                    src={`/scenes/${t}/bg.avif`}
+                    src={bgSrc}
                     alt=""
                     fill
                     sizes="100vw"
