@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { NightSkyEffects } from "./NightSkyEffects";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -193,6 +194,9 @@ export function NightAtmosphere() {
           style={{ opacity: particleOpacity, backgroundImage: "url('/scenes/day/particles.png')" }}
         />
       </div>
+
+      {/* Shooting stars + future night effects (fireflies, northern lights, etc.) */}
+      <NightSkyEffects />
 
       {/* Subtle Twinkling Stars */}
       {visibleStars.map((star, i) => (

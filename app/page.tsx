@@ -13,6 +13,12 @@ import { GithubIcon, LinkedinIcon, InstagramIcon } from "@/components/shared/Ico
 import { ExternalLink, Code2, Server, Database, Palette } from "lucide-react";
 import { SceneSelector } from "@/components/navigation/SceneSelector";
 import { ContactForm } from "@/components/contact/ContactForm";
+import {
+  trackResumeView,
+  trackCvDownload,
+  trackExperienceClick,
+  trackProjectClick,
+} from "@/lib/analytics";
 
 /*
 TODO: Future project: "UX Design Gallery"
@@ -133,6 +139,7 @@ export default function Home() {
               href="/cv/RajatCvJune.pdf"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={trackResumeView}
               className="inline-flex items-center justify-center rounded-lg bg-env-text px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-surface hover:opacity-90 transition-all duration-[250ms] ease-in-out select-none shadow-xs hover:scale-[1.02] focus:ring-2 focus:ring-env-text focus:ring-offset-2 outline-none"
             >
               View Resume
@@ -141,6 +148,7 @@ export default function Home() {
             <a
               href="/cv/RajatCvJune.pdf"
               download="Rajat_Deep_Singh_CV.pdf"
+              onClick={trackCvDownload}
               className="inline-flex items-center justify-center rounded-lg border border-env-border bg-env-surface/20 backdrop-blur-xs px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-text hover:bg-env-surface/40 hover:border-env-text transition-all duration-[250ms] ease-in-out select-none hover:scale-[1.02] focus:ring-2 focus:ring-env-border focus:ring-offset-2 outline-none"
             >
               Download CV
@@ -149,6 +157,7 @@ export default function Home() {
           {/* Row 2: View Experience centered below — pyramid apex */}
           <Link
             href="/experience"
+            onClick={trackExperienceClick}
             className="inline-flex items-center justify-center rounded-lg border border-env-border bg-env-surface/20 backdrop-blur-xs px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-text hover:bg-env-surface/40 hover:border-env-text transition-all duration-[250ms] ease-in-out select-none hover:scale-[1.02] focus:ring-2 focus:ring-env-border focus:ring-offset-2 outline-none"
           >
             View Experience
@@ -263,6 +272,7 @@ export default function Home() {
                             href={project.link}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => trackProjectClick(project.id)}
                             className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted"
                           >
                             <ExternalLink className="h-3 w-3" />

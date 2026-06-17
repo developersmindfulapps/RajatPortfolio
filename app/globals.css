@@ -343,6 +343,25 @@ h1, h2, h3, h4, h5, h6 {
   animation-delay: var(--twinkle-delay, 0s);
 }
 
+/* Shooting Star — diagonal sweep using `translate` (composable with static rotate) */
+@keyframes shooting-star-fly {
+  0% {
+    translate: 0 0;
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.90;
+  }
+  80% {
+    opacity: 0.65;
+  }
+  100% {
+    /* Move diagonally: right + slightly down, matching the ~35° angle */
+    translate: 38vw 22vh;
+    opacity: 0;
+  }
+}
+
 /* Accessibility: Support prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .animate-drift-clouds-day,
@@ -351,10 +370,11 @@ h1, h2, h3, h4, h5, h6 {
   .bird-element,
   .animate-float-particles-sunset,
   .animate-float-particles-night,
-  .animate-star-twinkle {
+  .animate-star-twinkle,
+  img[style*="shooting-star-fly"] {
     animation: none !important;
     transform: none !important;
-    opacity: 0.1 !important;
+    opacity: 0 !important;
   }
 }
 

@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/shared/Button";
+import { trackContactSubmission } from "@/lib/analytics";
 
 // ─── Turnstile widget (loaded lazily via script tag) ──────────────────────────
 
@@ -179,6 +180,7 @@ export function ContactForm() {
       }
 
       setFormState("success");
+      trackContactSubmission();
     } catch {
       setServerError("Network error. Please check your connection and retry.");
       setFormState("error");
