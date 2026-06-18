@@ -87,8 +87,8 @@ export function DayAtmosphere() {
       <div 
         className={`absolute top-0 left-0 w-[200vw] h-[45vh] flex flex-row pointer-events-none select-none will-change-transform animate-drift-clouds-day transition-opacity duration-300 ${cloudOpacity}`}
       >
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.png')" }} />
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.png')" }} />
+        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
+        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
       </div>
 
       {/* Bird Flock Layer */}
@@ -100,7 +100,7 @@ export function DayAtmosphere() {
             top: `${bird.startY}%`,
             animation: `fly-across-right ${bird.duration}s linear forwards`,
             animationDelay: `${bird.delay}s`,
-            backgroundImage: "url('/scenes/day/birds.png')",
+            backgroundImage: "url('/scenes/day/birds.avif')",
             "--bird-scale": bird.scale,
             "--bird-opacity": bird.opacity,
             "--bird-y-diff": `${bird.yDiff}px`,
@@ -120,8 +120,8 @@ export function SunriseAtmosphere() {
       <div 
         className={`absolute top-0 left-0 w-[200vw] h-[45vh] flex flex-row pointer-events-none select-none will-change-transform animate-drift-clouds-sunrise transition-opacity duration-300 ${cloudOpacity}`}
       >
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.png')" }} />
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.png')" }} />
+        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
+        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
       </div>
     </div>
   );
@@ -138,8 +138,8 @@ export function SunsetAtmosphere() {
         className="absolute top-0 left-0 w-[200vw] h-[38vh] flex flex-row pointer-events-none select-none will-change-transform animate-drift-clouds-sunset opacity-[0.07]"
         style={{ animationDuration: "720s" }}
       >
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.png')" }} />
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.png')" }} />
+        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
+        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
       </div>
 
       {/* Parallax Clouds Layer 2 (Faster, near clouds, slightly higher opacity) */}
@@ -147,19 +147,19 @@ export function SunsetAtmosphere() {
         className="absolute top-0 left-0 w-[200vw] h-[45vh] flex flex-row pointer-events-none select-none will-change-transform animate-drift-clouds-sunset opacity-[0.12]"
         style={{ animationDuration: "600s" }}
       >
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.png')" }} />
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.png')" }} />
+        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
+        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
       </div>
 
       {/* Floating Dust / Pollen Particles */}
       <div className="absolute inset-0 h-[200vh] w-full pointer-events-none select-none will-change-transform animate-float-particles-sunset">
         <div 
           className="h-[100vh] w-full bg-[length:150%_150%] bg-center bg-repeat-x transition-opacity duration-300"
-          style={{ opacity: particleOpacity, backgroundImage: "url('/scenes/day/particles.png')" }}
+          style={{ opacity: particleOpacity, backgroundImage: "url('/scenes/day/particles.avif')" }}
         />
         <div 
           className="h-[100vh] w-full bg-[length:150%_150%] bg-center bg-repeat-x transition-opacity duration-300"
-          style={{ opacity: particleOpacity, backgroundImage: "url('/scenes/day/particles.png')" }}
+          style={{ opacity: particleOpacity, backgroundImage: "url('/scenes/day/particles.avif')" }}
         />
       </div>
     </div>
@@ -187,11 +187,11 @@ export function NightAtmosphere() {
       <div className="absolute inset-0 h-[200vh] w-full pointer-events-none select-none will-change-transform animate-float-particles-night">
         <div 
           className="h-[100vh] w-full bg-[length:180%_180%] bg-center bg-repeat-x transition-opacity duration-300"
-          style={{ opacity: particleOpacity, backgroundImage: "url('/scenes/day/particles.png')" }}
+          style={{ opacity: particleOpacity, backgroundImage: "url('/scenes/day/particles.avif')" }}
         />
         <div 
           className="h-[100vh] w-full bg-[length:180%_180%] bg-center bg-repeat-x transition-opacity duration-300"
-          style={{ opacity: particleOpacity, backgroundImage: "url('/scenes/day/particles.png')" }}
+          style={{ opacity: particleOpacity, backgroundImage: "url('/scenes/day/particles.avif')" }}
         />
       </div>
 

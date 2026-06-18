@@ -350,7 +350,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .bird-element {
-  background-image: url('/scenes/day/birds.png');
+  background-image: url('/scenes/day/birds.avif');
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;

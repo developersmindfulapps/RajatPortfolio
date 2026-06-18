@@ -1,0 +1,38 @@
+[
+  {
+    "scene": "day",
+    "origDesktop": 2418942,
+    "origMobile": 2468324,
+    "avifDesktop": 236230,
+    "avifTablet": 115232,
+    "avifMobile": 149682,
+    "avifTabletPort": 204083
+  },
+  {
+    "scene": "night",
+    "origDesktop": 2597585,
+    "origMobile": 2538240,
+    "avifDesktop": 264261,
+    "avifTablet": 120038,
+    "avifMobile": 135443,
+    "avifTabletPort": 193725
+  },
+  {
+    "scene": "sunrise",
+    "origDesktop": 2112532,
+    "origMobile": 2590998,
+    "avifDesktop": 172678,
+    "avifTablet": 86010,
+    "avifMobile": 136708,
+    "avifTabletPort": 191341
+  },
+  {
+    "scene": "sunset",
+    "origDesktop": 2305519,
+    "origMobile": 2462521,
+    "avifDesktop": 214828,
+    "avifTablet": 104010,
+    "avifMobile": 130567,
+    "avifTabletPort": 183504
+  }
+]
