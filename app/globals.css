@@ -179,34 +179,70 @@ h1, h2, h3, h4, h5, h6 {
 /* High-Contrast Experience Page Overrides */
 .experience-page-container {
   /* Default / Day values */
-  --exp-heading: #111827;
-  --exp-body: #1F2937;
-  --exp-secondary: #4B5563;
-  --exp-card-bg: rgba(255, 255, 255, 0.20);
-  --exp-card-border: rgba(18, 18, 18, 0.12);
-  --exp-btn-primary-bg: #111827;
-  --exp-btn-primary-text: #FFFFFF;
+  --exp-heading: rgba(255, 255, 255, 0.95);
+  --exp-body: rgba(255, 255, 255, 0.85);
+  --exp-secondary: rgba(255, 255, 255, 0.72);
+  --exp-card-bg: rgba(15, 20, 35, 0.45);
+  --exp-card-border: rgba(255, 255, 255, 0.12);
+  --exp-btn-primary-bg: #FFFFFF;
+  --exp-btn-primary-text: #111827;
 }
 
 [data-theme="day"] .experience-page-container {
-  --exp-heading: #111827;
-  --exp-body: #1F2937;
-  --exp-secondary: #4B5563;
-  --exp-card-bg: rgba(255, 255, 255, 0.20);
-  --exp-card-border: rgba(18, 18, 18, 0.12);
-  --exp-btn-primary-bg: #111827;
-  --exp-btn-primary-text: #FFFFFF;
+  --exp-heading: rgba(255, 255, 255, 0.95);
+  --exp-body: rgba(255, 255, 255, 0.85);
+  --exp-secondary: rgba(255, 255, 255, 0.72);
+  --exp-card-bg: rgba(15, 20, 35, 0.45);
+  --exp-card-border: rgba(255, 255, 255, 0.12);
+  --exp-btn-primary-bg: #FFFFFF;
+  --exp-btn-primary-text: #111827;
 }
 
 [data-theme="sunrise"] .experience-page-container {
-  --exp-heading: #111827;
-  --exp-body: #1F2937;
-  --exp-secondary: #4B5563;
-  --exp-card-bg: rgba(255, 255, 255, 0.22);
-  --exp-card-border: rgba(28, 25, 23, 0.12);
-  --exp-btn-primary-bg: #111827;
-  --exp-btn-primary-text: #FFFFFF;
+  --exp-heading: rgba(255, 255, 255, 0.95);
+  --exp-body: rgba(255, 255, 255, 0.85);
+  --exp-secondary: rgba(255, 255, 255, 0.72);
+  --exp-card-bg: rgba(15, 20, 35, 0.45);
+  --exp-card-border: rgba(255, 255, 255, 0.12);
+  --exp-btn-primary-bg: #FFFFFF;
+  --exp-btn-primary-text: #111827;
 }
+
+/* Dark text shadow override specifically for the experience page to ensure white text legibility */
+.experience-page-container .text-shadow-env {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75), 0 2px 8px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Explicit style overrides for elements on the experience page to bypass Tailwind custom utility resolution conflicts */
+.experience-page-container h1,
+.experience-page-container h2,
+.experience-page-container h3,
+.experience-page-container h4,
+.experience-page-container h5,
+.experience-page-container h6,
+.experience-page-container .text-exp-heading {
+  color: var(--exp-heading) !important;
+}
+
+.experience-page-container p,
+.experience-page-container li,
+.experience-page-container .text-exp-body {
+  color: var(--exp-body) !important;
+}
+
+.experience-page-container .text-exp-secondary {
+  color: var(--exp-secondary) !important;
+}
+
+.experience-page-container .bg-exp-card-bg {
+  background-color: var(--exp-card-bg) !important;
+}
+
+.experience-page-container .border-exp-card-border {
+  border-color: var(--exp-card-border) !important;
+}
+
+
 
 [data-theme="night"] .experience-page-container {
   --exp-heading: #FFFFFF;

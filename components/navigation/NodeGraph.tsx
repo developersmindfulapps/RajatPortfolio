@@ -346,7 +346,7 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
                 {/* Scene-aware high-contrast text shadow label with weight 600 */}
                 <span 
                   className={cn(
-                    "absolute text-sm font-semibold uppercase tracking-widest text-shadow-env select-none pointer-events-none transition-all duration-[250ms] antialiased text-env-text constellation-label",
+                    "absolute text-sm font-semibold uppercase tracking-widest text-shadow-env select-none pointer-events-auto cursor-pointer transition-all duration-[250ms] antialiased text-env-text constellation-label",
                     // Prevent Work With Me wrapping on mobile — it must stay on one line
                     isMobile && node.id === "work-with-me" ? "whitespace-nowrap" : "",
                     labelPosition
