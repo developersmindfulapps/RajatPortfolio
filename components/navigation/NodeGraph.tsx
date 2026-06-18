@@ -105,27 +105,84 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
   const nodesList = isMobile ? MOBILE_NODES : CONSTELLATION_NODES;
   const isDayOrSunrise = activeTheme === "day" || activeTheme === "sunrise";
 
-  // Viewport-aware horizontal translation calculation
-  const translationX = activeNodeId && activeNodeId !== "identity" ? (() => {
-    if (viewportWidth < 1024) return 0; // Stacked vertically, keep centered
-    const desiredDesktopShift = 176;
-    const safeMargin = 40; // 40px safe zone from viewport left border
-    const constellationBounds = 260 * scale; // furthest node (work-with-me) boundary
-    const panelWidth = Math.min(viewportWidth * 0.38, 540);
-    const gap = 64; // lg:gap-16 is 64px
-    
-    // Exact available space before leftmost node clips
-    const availableHorizontalSpace = (viewportWidth / 2) - ((gap + panelWidth) / 2) - constellationBounds - safeMargin;
-    
-    // Clamp shift between 0 and desiredDesktopShift
-    const shift = Math.max(0, Math.min(desiredDesktopShift, availableHorizontalSpace));
-    return -shift;
-  })() : (() => {
-    // When panel is closed: shift slightly to the right (20px to 30px) on 13"-15" screens to balance the fixed left header
-    if (viewportWidth >= 1024 && viewportWidth < 1536) {
-      return 25; // Shift 25px center-right to balance the fixed left header
+  // Compute responsive layout translations to prevent collisions with the fixed hero section
+  const { transX, transY } = (() => {
+    if (isMobile) {
+      return { transX: 0, transY: 22 };
     }
-    return 0;
+
+    const isPanelOpen = activeNodeId !== null && activeNodeId !== "identity";
+
+    // 1. Base center shift (reverted back to standard centering)
+    let baseShiftX = 0;
+    if (viewportWidth >= 1024 && viewportWidth < 1536 && !isPanelOpen) {
+      baseShiftX = 25; // Shift 25px center-right to balance the fixed left header
+    }
+
+    // 2. Adjust X translation when panel is open (shift left to make space)
+    let x = baseShiftX;
+    let y = 0;
+
+    if (isPanelOpen) {
+      // Standard shift-left to accommodate the side panel
+      if (viewportWidth >= 1024) {
+        const desiredShift = 176;
+        const safeMargin = 40;
+        const constellationBounds = 260 * scale;
+        const panelWidth = Math.min(viewportWidth * 0.38, 540);
+        const gap = 64;
+        const availableSpace = (viewportWidth / 2) - ((gap + panelWidth) / 2) - constellationBounds - safeMargin;
+        const shift = Math.max(0, Math.min(desiredShift, availableSpace));
+        
+        // We apply the shift-left to our base position
+        x = baseShiftX - shift;
+      } else {
+        // Stacked vertically, keep centered
+        x = 0;
+      }
+    }
+
+    // 3. Collision-safe logic against the fixed hero section
+    // Hero occupies top-left region: width ~380px, height ~380px.
+    // Leftmost constellation boundary (Work With Me / About)
+    const leftmostNodeOffset = 260 * scale;
+    const constellationLeftX = (viewportWidth / 2) + x - leftmostNodeOffset;
+
+    // Minimum safe horizontal gap from hero boundary (380px)
+    const heroBoundaryX = 390;
+    const minHorizontalGap = 20;
+
+    if (constellationLeftX < heroBoundaryX + minHorizontalGap) {
+      // Collision detected or imminent! Pushing downward is our primary safety valve
+      const overlapAmt = (heroBoundaryX + minHorizontalGap) - constellationLeftX;
+      
+      // Shift downward based on how constrained we are
+      y = Math.min(130, overlapAmt * 0.7);
+
+      // Also push slightly to the right to clear it horizontally if needed
+      x += Math.min(45, overlapAmt * 0.35);
+    }
+
+    // 4. Specific width-based overrides as requested
+    if (viewportWidth < 1400) {
+      // Gradually shift downward and increase spacing
+      const factor = (1400 - viewportWidth) / 400; // e.g., 0 to 1
+      y = Math.max(y, 35 + factor * 50);
+    }
+
+    if (viewportWidth < 1280) {
+      // Move lower and slightly right
+      const factor = (1280 - viewportWidth) / 280; // e.g., 0 to 1
+      y = Math.max(y, 70 + factor * 60);
+      x = Math.max(x, x + 25);
+    }
+
+    // 5. Tablet vertical safety (hero is fixed top-left for md: viewport >= 768px)
+    if (viewportWidth < 1024 && viewportWidth >= 768) {
+      y = Math.max(y, 80);
+    }
+
+    return { transX: x, transY: y };
   })();
 
   return (
@@ -136,9 +193,7 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
       style={{
         width: `${width}px`,
         height: `${height}px`,
-        transform: isMobile
-          ? "translate(0px, 22px)"   // Slightly lower than hero — reduced from 50px
-          : `translate(${translationX}px, 0px)`,
+        transform: `translate(${transX}px, ${transY}px)`,
       }}
     >
 
