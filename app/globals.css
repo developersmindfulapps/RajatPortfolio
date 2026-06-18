@@ -309,57 +309,6 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Background Atmosphere Enhancements */
 
-/* Clouds Drift Keyframes */
-@keyframes drift-clouds-right {
-  0% {
-    transform: translate3d(-50%, 0, 0);
-  }
-  100% {
-    transform: translate3d(0%, 0, 0);
-  }
-}
-
-.animate-drift-clouds-day {
-  animation: drift-clouds-right 480s linear infinite;
-}
-
-.animate-drift-clouds-sunrise {
-  animation: drift-clouds-right 540s linear infinite;
-}
-
-.animate-drift-clouds-sunset {
-  animation: drift-clouds-right 600s linear infinite;
-}
-
-/* Bird Flying Keyframes */
-@keyframes fly-across-right {
-  0% {
-    transform: translate3d(-20vw, 0, 0) scale(var(--bird-scale, 0.4));
-    opacity: 0;
-  }
-  5% {
-    opacity: var(--bird-opacity, 0.35);
-  }
-  95% {
-    opacity: var(--bird-opacity, 0.35);
-  }
-  100% {
-    transform: translate3d(120vw, var(--bird-y-diff, -30px), 0) scale(var(--bird-scale, 0.4));
-    opacity: 0;
-  }
-}
-
-.bird-element {
-  background-image: url('/scenes/day/birds.avif');
-  background-size: contain;
-  background-repeat: no-repeat;
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  pointer-events: none;
-  will-change: transform;
-}
-
 /* Sunset Particles Floating (Slow upward drift + subtle sway) */
 @keyframes float-particles-sunset {
   0% {
@@ -432,10 +381,6 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Accessibility: Support prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-  .animate-drift-clouds-day,
-  .animate-drift-clouds-sunrise,
-  .animate-drift-clouds-sunset,
-  .bird-element,
   .animate-float-particles-sunset,
   .animate-float-particles-night,
   .animate-star-twinkle,

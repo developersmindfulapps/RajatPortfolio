@@ -18,113 +18,12 @@ function useIsMobile() {
   return isMobile;
 }
 
-interface BirdInstance {
-  id: number;
-  delay: number;
-  startY: number;
-  yDiff: number;
-  scale: number;
-  duration: number;
-  opacity: number;
-}
-
 export function DayAtmosphere() {
-  const [birds, setBirds] = useState<BirdInstance[]>([]);
-  const isMobile = useIsMobile();
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
-    const triggerFlock = () => {
-      const minCount = isMobile ? 2 : 3;
-      const maxCount = isMobile ? 3 : 5;
-      const count = Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount;
-
-      const newBirds: BirdInstance[] = Array.from({ length: count }).map((_, i) => {
-        const duration = isMobile ? (10 + Math.random() * 5) : (8 + Math.random() * 7);
-        const delay = Math.random() * 2.5; 
-        const startY = 10 + Math.random() * 30; // Upper sky only (10% to 40% height)
-        const yDiff = -40 + Math.random() * 80; // Altitude variation (-40px to +40px)
-        const scale = isMobile 
-          ? (0.35 + Math.random() * 0.15) 
-          : (0.55 + Math.random() * 0.25); 
-        const opacity = isMobile ? 0.20 : 0.35; 
-
-        return {
-          id: Date.now() + i,
-          delay,
-          startY,
-          yDiff,
-          scale,
-          duration,
-          opacity,
-        };
-      });
-
-      setBirds(newBirds);
-
-      setTimeout(() => {
-        setBirds([]);
-      }, 20000);
-
-      const nextMin = isMobile ? 60 : 30;
-      const nextMax = isMobile ? 90 : 60;
-      const nextDelay = (nextMin + Math.random() * (nextMax - nextMin)) * 1000;
-      timeoutId = setTimeout(triggerFlock, nextDelay);
-    };
-
-    const initialDelay = (isMobile ? 5 : 3) * 1000;
-    timeoutId = setTimeout(triggerFlock, initialDelay);
-
-    return () => clearTimeout(timeoutId);
-  }, [isMobile]);
-
-  const cloudOpacity = isMobile ? "opacity-12" : "opacity-15";
-
-  return (
-    <div className="absolute inset-0 h-full w-full overflow-hidden pointer-events-none select-none z-10">
-      {/* Drifting Clouds (Upper sky only, left-to-right traversal) */}
-      <div 
-        className={`absolute top-0 left-0 w-[200vw] h-[45vh] flex flex-row pointer-events-none select-none will-change-transform animate-drift-clouds-day transition-opacity duration-300 ${cloudOpacity}`}
-      >
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
-      </div>
-
-      {/* Bird Flock Layer */}
-      {birds.map((bird) => (
-        <div
-          key={bird.id}
-          className="bird-element"
-          style={{
-            top: `${bird.startY}%`,
-            animation: `fly-across-right ${bird.duration}s linear forwards`,
-            animationDelay: `${bird.delay}s`,
-            backgroundImage: "url('/scenes/day/birds.avif')",
-            "--bird-scale": bird.scale,
-            "--bird-opacity": bird.opacity,
-            "--bird-y-diff": `${bird.yDiff}px`,
-          } as React.CSSProperties}
-        />
-      ))}
-    </div>
-  );
+  return null;
 }
 
 export function SunriseAtmosphere() {
-  const isMobile = useIsMobile();
-  const cloudOpacity = isMobile ? "opacity-[0.08]" : "opacity-[0.10]";
-
-  return (
-    <div className="absolute inset-0 h-full w-full overflow-hidden pointer-events-none select-none z-10">
-      <div 
-        className={`absolute top-0 left-0 w-[200vw] h-[45vh] flex flex-row pointer-events-none select-none will-change-transform animate-drift-clouds-sunrise transition-opacity duration-300 ${cloudOpacity}`}
-      >
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
-      </div>
-    </div>
-  );
+  return null;
 }
 
 export function SunsetAtmosphere() {
@@ -133,24 +32,6 @@ export function SunsetAtmosphere() {
 
   return (
     <div className="absolute inset-0 h-full w-full overflow-hidden pointer-events-none select-none z-10">
-      {/* Parallax Clouds Layer 1 (Slower, far clouds, lower opacity) */}
-      <div 
-        className="absolute top-0 left-0 w-[200vw] h-[38vh] flex flex-row pointer-events-none select-none will-change-transform animate-drift-clouds-sunset opacity-[0.07]"
-        style={{ animationDuration: "720s" }}
-      >
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
-      </div>
-
-      {/* Parallax Clouds Layer 2 (Faster, near clouds, slightly higher opacity) */}
-      <div 
-        className="absolute top-0 left-0 w-[200vw] h-[45vh] flex flex-row pointer-events-none select-none will-change-transform animate-drift-clouds-sunset opacity-[0.12]"
-        style={{ animationDuration: "600s" }}
-      >
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
-        <div className="w-[100vw] h-full bg-cover bg-no-repeat" style={{ backgroundImage: "url('/scenes/day/clouds.avif')" }} />
-      </div>
-
       {/* Floating Dust / Pollen Particles */}
       <div className="absolute inset-0 h-[200vh] w-full pointer-events-none select-none will-change-transform animate-float-particles-sunset">
         <div 
