@@ -13,6 +13,8 @@ import { GithubIcon, LinkedinIcon, InstagramIcon } from "@/components/shared/Ico
 import { ExternalLink, Code2, Server, Database, Palette } from "lucide-react";
 import { SceneSelector } from "@/components/navigation/SceneSelector";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { RecommendationsPanel } from "@/components/panels/RecommendationsPanel";
+import { Reference } from "@/types/reference";
 import {
   trackResumeView,
   trackCvDownload,
@@ -29,6 +31,25 @@ export default function Home() {
   const [activeNode, setActiveNode] = useState<string | null>(null);
   const [nodeCoords, setNodeCoords] = useState<{ x: number; y: number } | null>(null);
   const [panelCoords, setPanelCoords] = useState<{ x: number; y: number } | null>(null);
+  const [references, setReferences] = useState<Reference[]>([]);
+  const [loadingReferences, setLoadingReferences] = useState(true);
+
+  useEffect(() => {
+    async function fetchReferences() {
+      try {
+        const res = await fetch("/api/references");
+        if (res.ok) {
+          const data = await res.json();
+          setReferences(data);
+        }
+      } catch (err) {
+        console.error("Error fetching recommendations:", err);
+      } finally {
+        setLoadingReferences(false);
+      }
+    }
+    fetchReferences();
+  }, []);
 
   const handleNodeClick = (nodeId: string) => {
     if (activeNode === nodeId) {
@@ -289,6 +310,13 @@ export default function Home() {
                   </Card>
                 ))}
               </div>
+            )}
+
+            {activeNode === "recommendations" && (
+              <RecommendationsPanel
+                references={references}
+                loading={loadingReferences}
+              />
             )}
 
             {activeNode === "skills" && (

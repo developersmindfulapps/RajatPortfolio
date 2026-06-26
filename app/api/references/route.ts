@@ -3,6 +3,7 @@ import { getCollection } from "@/lib/mongodb";
 import { isRateLimited } from "@/lib/rateLimit";
 import { Reference } from "@/types/reference";
 import crypto from "crypto";
+import { Resend } from "resend";
 
 export const dynamic = "force-dynamic";
 
@@ -148,6 +149,92 @@ export async function POST(request: Request) {
     };
 
     await collection.insertOne(newRecommendation);
+
+    // 5. Attempt Resend notification email in a non-blocking try/catch
+    try {
+      const apiKey = process.env.RESEND_API_KEY;
+      const contactEmail = process.env.CONTACT_EMAIL;
+      
+      if (apiKey && contactEmail) {
+        const resend = new Resend(apiKey);
+        const submissionDate = newRecommendation.createdAt.toLocaleString("en-GB", {
+          dateStyle: "full",
+          timeStyle: "short",
+          timeZone: "Asia/Kolkata",
+        });
+
+        const relFormatted = relationship === "manager" 
+          ? "Manager" 
+          : relationship === "coworker" 
+            ? "Co-worker" 
+            : "Client";
+
+        await resend.emails.send({
+          from: "Portfolio Recommendation <onboarding@resend.dev>",
+          to: [contactEmail],
+          subject: "⭐ New Recommendation Submitted",
+          html: `
+            <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #111827; background: #f9fafb; border-radius: 12px;">
+              <h2 style="margin-top: 0; font-size: 20px; color: #111827;">⭐ New Recommendation Submitted</h2>
+              <p style="font-size: 14px; font-weight: bold; color: #b45309; background: #fef3c7; border: 1px solid #fde68a; padding: 10px; border-radius: 6px;">
+                Status: Pending Approval
+              </p>
+              
+              <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+                <tr>
+                  <td style="padding: 8px 0; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; width: 140px;">Name</td>
+                  <td style="padding: 8px 0; font-size: 14px; font-weight: bold;">${name}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">Relationship</td>
+                  <td style="padding: 8px 0; font-size: 14px;">${relFormatted}</td>
+                </tr>
+                ${company ? `
+                <tr>
+                  <td style="padding: 8px 0; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">Company</td>
+                  <td style="padding: 8px 0; font-size: 14px;">${company}</td>
+                </tr>
+                ` : ""}
+                ${linkedin ? `
+                <tr>
+                  <td style="padding: 8px 0; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">LinkedIn Profile</td>
+                  <td style="padding: 8px 0; font-size: 14px;"><a href="${linkedin}" target="_blank" rel="noopener noreferrer" style="color: #2563eb;">${linkedin}</a></td>
+                </tr>
+                ` : ""}
+                <tr>
+                  <td style="padding: 8px 0; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">Submitted</td>
+                  <td style="padding: 8px 0; font-size: 14px;">${submissionDate}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">Recommendation ID</td>
+                  <td style="padding: 8px 0; font-size: 14px; font-family: monospace;">${newRecommendation.publicId}</td>
+                </tr>
+              </table>
+              
+              <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+              
+              <h3 style="margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">Recommendation</h3>
+              <p style="font-size: 14px; line-height: 1.6; white-space: pre-wrap; margin: 0; padding: 12px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px;">${comment}</p>
+              
+              <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+              
+              <h3 style="margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">Moderation</h3>
+              <p style="font-size: 13px; margin: 0;">
+                <strong>Future Admin URL:</strong><br />
+                <a href="/admin/recommendations?id=${newRecommendation.publicId}" style="color: #2563eb; text-decoration: underline;">
+                  /admin/recommendations?id=${newRecommendation.publicId}
+                </a>
+              </p>
+            </div>
+          `,
+        });
+      } else {
+        if (!apiKey) console.warn("[references-post] RESEND_API_KEY is not configured.");
+        if (!contactEmail) console.warn("[references-post] CONTACT_EMAIL is not configured.");
+      }
+    } catch (emailErr) {
+      console.error("[references-post] Failed to send recommendation email notification:", emailErr);
+    }
 
     return NextResponse.json(
       { 

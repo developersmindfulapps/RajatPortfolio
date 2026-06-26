@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { User, FolderGit, Wrench, Briefcase, Mail } from "lucide-react";
+import { User, FolderGit, Wrench, Briefcase, Mail, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CONSTELLATION_NODES, CONSTELLATION_CONNECTIONS } from "@/lib/constellation";
 
@@ -11,6 +11,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string; style?:
   Wrench,
   Briefcase,
   Mail,
+  MessageSquare,
 };
 
 // Symmetrical and balanced mobile-specific coordinate mapping 
@@ -18,13 +19,14 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string; style?:
 // Explore node radius (mobile) = 72px. Outer node radius = 28px.
 // Minimum clearance between Explore circumference and outer node edge = ~40px at these values.
 const MOBILE_NODES = [
-  { id: "identity",     label: "Explore",      iconName: "User",      x:    0, y:    0 },
-  { id: "projects",    label: "Projects",     iconName: "FolderGit", x:    0, y: -160 },
-  { id: "about",       label: "About",        iconName: "User",      x: -140, y:  -25 },
-  { id: "skills",      label: "Skills",       iconName: "Wrench",    x:  140, y:  -25 },
+  { id: "identity",     label: "Explore",      iconName: "User",          x:    0, y:    0 },
+  { id: "recommendations", label: "Recommendations", iconName: "MessageSquare", x:  -80, y: -110 },
+  { id: "projects",    label: "Projects",     iconName: "FolderGit",     x:    0, y: -160 },
+  { id: "skills",      label: "Skills",       iconName: "Wrench",        x:  140, y:  -25 },
+  { id: "about",       label: "About",        iconName: "User",          x: -140, y:  -25 },
   // Bottom nodes spread horizontally — mirrors About/Skills pattern, avoids vertical stacking
-  { id: "work-with-me", label: "Work With Me", iconName: "Briefcase", x:  -95, y:  125 },
-  { id: "contact",     label: "Contact",      iconName: "Mail",      x:   95, y:  125 },
+  { id: "work-with-me", label: "Work With Me", iconName: "Briefcase",     x:  -95, y:  125 },
+  { id: "contact",     label: "Contact",      iconName: "Mail",          x:   95, y:  125 },
 ];
 
 type EnvironmentTheme = "day" | "night" | "sunset" | "sunrise";
@@ -123,14 +125,15 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
     let x = baseShiftX;
     let y = 0;
 
+    const panelWidth = Math.min(viewportWidth * 0.38, 540);
+    const gap = 64;
+
     if (isPanelOpen) {
       // Standard shift-left to accommodate the side panel
       if (viewportWidth >= 1024) {
         const desiredShift = 176;
         const safeMargin = 40;
         const constellationBounds = 260 * scale;
-        const panelWidth = Math.min(viewportWidth * 0.38, 540);
-        const gap = 64;
         const availableSpace = (viewportWidth / 2) - ((gap + panelWidth) / 2) - constellationBounds - safeMargin;
         const shift = Math.max(0, Math.min(desiredShift, availableSpace));
         
@@ -143,24 +146,29 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
     }
 
     // 3. Collision-safe logic against the fixed hero section
-    // Hero occupies top-left region: width ~380px, height ~380px.
+    // Hero occupies top-left region: width ~480px, height ~380px.
+    // Calculate the actual center of the constellation relative to the viewport:
+    const constellationViewportCenterX = (isPanelOpen && viewportWidth >= 1024)
+      ? (viewportWidth - gap - panelWidth) / 2 + x
+      : (viewportWidth / 2) + x;
+
     // Leftmost constellation boundary (Work With Me / About)
     const leftmostNodeOffset = 260 * scale;
-    const constellationLeftX = (viewportWidth / 2) + x - leftmostNodeOffset;
+    const constellationLeftX = constellationViewportCenterX - leftmostNodeOffset;
 
-    // Minimum safe horizontal gap from hero boundary (380px)
-    const heroBoundaryX = 390;
+    // Minimum safe horizontal gap from hero boundary (480px)
+    const heroBoundaryX = 480;
     const minHorizontalGap = 20;
 
     if (constellationLeftX < heroBoundaryX + minHorizontalGap) {
-      // Collision detected or imminent! Pushing downward is our primary safety valve
+      // Collision detected or imminent! Pushing downward and rightward
       const overlapAmt = (heroBoundaryX + minHorizontalGap) - constellationLeftX;
       
       // Shift downward based on how constrained we are
       y = Math.min(130, overlapAmt * 0.7);
 
-      // Also push slightly to the right to clear it horizontally if needed
-      x += Math.min(45, overlapAmt * 0.35);
+      // Also push to the right to clear it horizontally (up to 180px push-right)
+      x += Math.min(180, overlapAmt * 0.5);
     }
 
     // 4. Specific width-based overrides as requested
@@ -336,16 +344,18 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
 
           // Navigation Nodes - w-14 h-14, font weight 600, high contrast crisp rendering
           const labelPosition = isMobile
-            ? (node.id === "projects" || node.id === "about" || node.id === "skills")
+            ? (node.id === "projects" || node.id === "about" || node.id === "skills" || node.id === "recommendations")
               // Top-side nodes: labels sit ABOVE the icon — reduce gap by shrinking bottom offset
               ? "bottom-14 left-1/2 -translate-x-1/2 text-center w-24"
               // Bottom nodes: labels sit BELOW the icon — reduce gap by shrinking top offset
               : "top-14 left-1/2 -translate-x-1/2 text-center w-24"
             : node.id === "contact"
               ? "top-16 left-1/2 -translate-x-1/2 text-center mt-1 w-28"
-              : node.x < 0 
-                ? "right-16 top-1/2 -translate-y-1/2 text-right mr-3 w-32" 
-                : "left-16 top-1/2 -translate-y-1/2 text-left ml-3 w-32";
+              : node.id === "recommendations"
+                ? "bottom-16 left-1/2 -translate-x-1/2 text-center w-40"
+                : node.x < 0 
+                  ? "right-16 top-1/2 -translate-y-1/2 text-right mr-3 w-32" 
+                  : "left-16 top-1/2 -translate-y-1/2 text-left ml-3 w-32";
 
             const isNodeIdle = !isActive && hoveredNodeId !== node.id;
             const iconStyle = isDayOrSunrise && isNodeIdle ? {
@@ -402,8 +412,8 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
                 <span 
                   className={cn(
                     "absolute text-sm font-semibold uppercase tracking-widest text-shadow-env select-none pointer-events-auto cursor-pointer transition-all duration-[250ms] antialiased text-env-text constellation-label",
-                    // Prevent Work With Me wrapping on mobile — it must stay on one line
-                    isMobile && node.id === "work-with-me" ? "whitespace-nowrap" : "",
+                    // Prevent Work With Me and Recommendations wrapping — they must stay on one line
+                    node.id === "work-with-me" || node.id === "recommendations" ? "whitespace-nowrap" : "",
                     labelPosition
                   )}
                   style={labelStyle}

@@ -29,6 +29,39 @@ function isValidUrl(val: string): boolean {
   }
 }
 
+function isAuthorized(request: Request): boolean {
+  const adminSecret = process.env.ADMIN_SECRET;
+  if (!adminSecret) {
+    return false;
+  }
+
+  // 1. Check custom X-Admin-Secret header
+  const customHeader = request.headers.get("x-admin-secret");
+  if (customHeader && customHeader.trim() === adminSecret) {
+    return true;
+  }
+
+  // 2. Check standard Authorization header
+  const authHeader = request.headers.get("authorization");
+  if (authHeader) {
+    const token = authHeader.replace(/^bearer\s+/i, "").trim();
+    if (token === adminSecret) {
+      return true;
+    }
+  }
+
+  // 3. Placeholder for future session-based authentication via HTTP-only cookie
+  // Checks for the presence of an admin_session cookie
+  const cookieHeader = request.headers.get("cookie") || "";
+  const hasAdminSession = cookieHeader.includes("admin_session=");
+  if (hasAdminSession) {
+    // TODO: Verify session signature in future session-based admin dashboard integrations.
+    // For now, presence of cookie acts as placeholder without bypassing bearer/secret check.
+  }
+
+  return false;
+}
+
 /**
  * PATCH /api/references/[id]
  * Updates approved/status, comment, company, or linkedin properties
@@ -38,6 +71,13 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!isAuthorized(request)) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin secret required." },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     const body = await request.json();
 
@@ -132,6 +172,13 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!isAuthorized(request)) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized. Admin secret required." },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     
     // Support lookup by both MongoDB ObjectId or stable UUID publicId
