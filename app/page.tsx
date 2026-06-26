@@ -52,8 +52,8 @@ export default function Home() {
   }, []);
 
   const handleNodeClick = (nodeId: string) => {
-    if (activeNode === nodeId) {
-      setActiveNode(null); // Collapse panel
+    if (activeNode === nodeId) { 
+      setActiveNode(null); // Collapse panels
     } else {
       setActiveNode(nodeId);
     }
