@@ -20,8 +20,8 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string; style?:
 // Minimum clearance between Explore circumference and outer node edge = ~40px at these values.
 const MOBILE_NODES = [
   { id: "identity",     label: "Explore",      iconName: "User",          x:    0, y:    0 },
-  { id: "recommendations", label: "Recommendations", iconName: "MessageSquare", x:  -80, y: -110 },
-  { id: "projects",    label: "Projects",     iconName: "FolderGit",     x:    0, y: -160 },
+  { id: "recommendations", label: "Recommendations", iconName: "MessageSquare", x:  -95, y: -125 },
+  { id: "projects",    label: "Projects",     iconName: "FolderGit",     x:   95, y: -125 },
   { id: "skills",      label: "Skills",       iconName: "Wrench",        x:  140, y:  -25 },
   { id: "about",       label: "About",        iconName: "User",          x: -140, y:  -25 },
   // Bottom nodes spread horizontally — mirrors About/Skills pattern, avoids vertical stacking
@@ -39,6 +39,7 @@ interface NodeGraphProps {
 export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
   const [scale, setScale] = useState(1);
   const [viewportWidth, setViewportWidth] = useState(1200);
+  const [viewportHeight, setViewportHeight] = useState(800);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [activeTheme, setActiveTheme] = useState<EnvironmentTheme>("day");
 
@@ -69,7 +70,9 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
   useEffect(() => {
     const handleResize = () => {
       const w = window.innerWidth;
+      const h = window.innerHeight;
       setViewportWidth(w);
+      setViewportHeight(h);
       if (w < 768) {
         setScale(1.0);  // Mobile coordinates are pre-sized, use scale 1.0
       } else if (w < 1024) {
@@ -146,29 +149,33 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
     }
 
     // 3. Collision-safe logic against the fixed hero section
-    // Hero occupies top-left region: width ~480px, height ~380px.
+    // Hero occupies top-left region: width ~440px, height ~340px.
     // Calculate the actual center of the constellation relative to the viewport:
     const constellationViewportCenterX = (isPanelOpen && viewportWidth >= 1024)
       ? (viewportWidth - gap - panelWidth) / 2 + x
       : (viewportWidth / 2) + x;
 
-    // Leftmost constellation boundary (Work With Me / About)
-    const leftmostNodeOffset = 260 * scale;
-    const constellationLeftX = constellationViewportCenterX - leftmostNodeOffset;
+    // Detect actual visual overlap between leftmost/topmost node and the hero section
+    // leftmost node is About node at x = -240 * scale; topmost is Recommendations at y = -220 * scale
+    const nodeX = constellationViewportCenterX - 240 * scale;
+    const nodeY = (viewportHeight / 2) - 220 * scale;
 
-    // Minimum safe horizontal gap from hero boundary (480px)
-    const heroBoundaryX = 480;
-    const minHorizontalGap = 20;
+    const heroWidth = 440;
+    const heroHeight = 340;
 
-    if (constellationLeftX < heroBoundaryX + minHorizontalGap) {
-      // Collision detected or imminent! Pushing downward and rightward
-      const overlapAmt = (heroBoundaryX + minHorizontalGap) - constellationLeftX;
-      
-      // Shift downward based on how constrained we are
-      y = Math.min(130, overlapAmt * 0.7);
+    if (nodeX < heroWidth && nodeY < heroHeight) {
+      // Collision detected! Calculate overlaps to clear it
+      const overlapX = heroWidth - nodeX;
+      const overlapY = heroHeight - nodeY;
 
-      // Also push to the right to clear it horizontally (up to 180px push-right)
-      x += Math.min(180, overlapAmt * 0.5);
+      // On tablet-sized widths when panel is closed, keep it centered horizontally and shift down instead
+      if (viewportWidth < 1280 && !isPanelOpen) {
+        y = Math.min(160, y + overlapY + 30);
+      } else {
+        // Shift down and right more aggressively to completely clear the hero text/buttons
+        y = Math.min(160, y + overlapY + 35);
+        x += Math.min(180, overlapX * 0.6);
+      }
     }
 
     // 4. Specific width-based overrides as requested

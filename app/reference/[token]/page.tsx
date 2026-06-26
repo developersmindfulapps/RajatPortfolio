@@ -3,6 +3,7 @@
 import React, { useState, use } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 interface PageProps {
   params: Promise<{ token: string }>;
@@ -111,6 +112,15 @@ export default function ReferenceTokenPage({ params }: PageProps) {
                   Thank you for taking the time to write a recommendation.
                   It has been received and will appear on my portfolio after approval.
                 </p>
+
+                <div className="pt-2">
+                  <Link
+                    href="/"
+                    className="inline-flex items-center justify-center rounded-lg bg-env-text text-env-surface font-bold uppercase tracking-wider text-xs py-3 px-6 hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer select-none outline-none shadow-md"
+                  >
+                    Go To Home
+                  </Link>
+                </div>
               </motion.div>
             ) : (
               <motion.div
