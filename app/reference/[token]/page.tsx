@@ -4,6 +4,7 @@ import React, { useState, use } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { trackRecommendationSubmission } from "@/lib/analytics";
 
 interface PageProps {
   params: Promise<{ token: string }>;
@@ -65,6 +66,7 @@ export default function ReferenceTokenPage({ params }: PageProps) {
       }
 
       setStatus("success");
+      trackRecommendationSubmission();
     } catch (err: any) {
       console.error("Submission Error:", err);
       setStatus("error");

@@ -20,6 +20,8 @@ import {
   trackCvDownload,
   trackExperienceClick,
   trackProjectClick,
+  trackPageView,
+  trackRecommendationsPanelOpen,
 } from "@/lib/analytics";
 
 /*
@@ -49,6 +51,7 @@ export default function Home() {
       }
     }
     fetchReferences();
+    trackPageView("home");
   }, []);
 
   const handleNodeClick = (nodeId: string) => {
@@ -56,6 +59,9 @@ export default function Home() {
       setActiveNode(null); // Collapse panels
     } else {
       setActiveNode(nodeId);
+      if (nodeId === "recommendations") {
+        trackRecommendationsPanelOpen();
+      }
     }
   };
 
@@ -493,6 +499,13 @@ export default function Home() {
             className="text-[10px] font-semibold uppercase tracking-[0.04em] text-env-text hover:opacity-80 transition-opacity"
           >
             Instagram
+          </a>
+          <span className="text-[10px] text-env-border font-bold select-none">•</span>
+          <a 
+            href="mailto:developers.mindfulapps@gmail.com" 
+            className="text-[10px] font-semibold uppercase tracking-[0.04em] text-env-text hover:opacity-80 transition-opacity"
+          >
+            Email
           </a>
         </div>
       </footer>

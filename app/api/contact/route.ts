@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { getCollection } from "@/lib/mongodb";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -107,6 +108,21 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         { error: "Server configuration error. Please try again later." },
         { status: 500 }
       );
+    }
+
+    // 4.5. Save submission to MongoDB
+    try {
+      const collection = await getCollection("contact_submissions");
+      await collection.insertOne({
+        name,
+        email,
+        message,
+        status: "unread",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+    } catch (dbErr) {
+      console.error("[contact-api] Failed to save contact submission to MongoDB:", dbErr);
     }
 
     // 5. Send email via Resend
