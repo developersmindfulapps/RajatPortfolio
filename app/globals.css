@@ -390,9 +390,9 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0 !important;
   }
 }
-
-
-
-
-
-
+/* Shimmer keyframe for image skeleton placeholders */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

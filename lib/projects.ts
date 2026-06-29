@@ -6,6 +6,25 @@ This will later showcase website concepts, landing pages, mobile app screens, de
 */
 export const PROJECTS: Project[] = [
   {
+    id: "project-portfolio",
+    title: "Personal Portfolio Platform",
+    description: "I wanted my portfolio to demonstrate how I think as an engineer, not just showcase my resume. Built from scratch with immersive scene-aware UI, interactive constellation navigation, secure recommendations, analytics, contact workflows, and a protected admin dashboard. Every feature reflects real engineering decisions around UX, architecture, security, and performance.",
+    tags: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "MongoDB",
+      "Tailwind CSS",
+      "JWT",
+      "Resend",
+      "Cloudflare",
+      "Analytics",
+      "Admin Dashboard"
+    ],
+    link: "/case-study",
+    ctaText: "View Case Study →"
+  },
+  {
     id: "project-enterprise",
     title: "Enterprise Frontend Engineering",
     description: "Over the past 8+ years, I've worked on large-scale enterprise platforms for Fortune 500 companies and industry-leading organizations. Much of this work is protected by client confidentiality, but the experience has shaped how I approach architecture, usability, maintainability, and long-term product development.",

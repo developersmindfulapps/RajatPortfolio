@@ -7,6 +7,7 @@ export interface Project {
   github?: string;
   image?: string;
   comingSoon?: boolean;
+  ctaText?: string;
 }
 
 export interface Experience {

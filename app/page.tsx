@@ -266,55 +266,66 @@ export default function Home() {
 
             {activeNode === "projects" && (
               <div className="grid gap-4">
-                {PROJECTS.map((project) => (
-                  <Card key={project.id} hoverEffect={false} className="p-5 bg-env-text/5 border-env-border/50">
-                    <h4 className="font-bold text-env-text text-sm uppercase tracking-wider">{project.title}</h4>
-                    <p className="text-xs text-env-muted mt-2">{project.description}</p>
-                    
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {project.tags.map((tag) => (
-                        <span key={tag} className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-env-text/5 text-env-text">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+                {PROJECTS.map((project) => {
+                  const isFlagship = project.id === "project-portfolio";
+                  return (
+                    <Card 
+                      key={project.id} 
+                      hoverEffect={true} 
+                      className={`p-5 transition-all duration-300 ${
+                        isFlagship 
+                          ? "bg-env-surface/40 border-indigo-500/35 shadow-[0_0_20px_rgba(99,102,241,0.08)] hover:border-indigo-500/55" 
+                          : "bg-env-text/5 border-env-border/50"
+                      }`}
+                    >
+                      <h4 className="font-bold text-env-text text-sm uppercase tracking-wider">{project.title}</h4>
+                      <p className="text-xs text-env-muted mt-2">{project.description}</p>
+                      
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {project.tags.map((tag) => (
+                          <span key={tag} className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-env-text/5 text-env-text">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
 
-                    <div className="mt-4 flex gap-4 text-xs font-semibold uppercase tracking-wider">
-                      {project.github && (
-                        <a href={project.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted">
-                          <GithubIcon className="h-3.5 w-3.5" />
-                          Code
-                        </a>
-                      )}
-                      {project.link && (
-                        project.link.startsWith("/") ? (
-                          <Link
-                            href={project.link}
-                            className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted"
-                          >
-                            {"View Experience →"}
-                          </Link>
-                        ) : (
-                          <a
-                            href={project.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => trackProjectClick(project.id)}
-                            className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted"
-                          >
-                            <ExternalLink className="h-3 w-3" />
-                            {"Visit Website →"}
+                      <div className="mt-4 flex gap-4 text-xs font-semibold uppercase tracking-wider font-body">
+                        {project.github && (
+                          <a href={project.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted font-body">
+                            <GithubIcon className="h-3.5 w-3.5" />
+                            Code
                           </a>
-                        )
-                      )}
-                      {project.comingSoon && (
-                        <span className="inline-flex items-center text-env-muted select-none">
-                          {"Coming Soon"}
-                        </span>
-                      )}
-                    </div>
-                  </Card>
-                ))}
+                        )}
+                        {project.link && (
+                          project.link.startsWith("/") ? (
+                            <Link
+                              href={project.link}
+                              className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted font-body"
+                            >
+                              {project.ctaText || "View Experience →"}
+                            </Link>
+                          ) : (
+                            <a
+                              href={project.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => trackProjectClick(project.id)}
+                              className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted font-body"
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                              {"Visit Website →"}
+                            </a>
+                          )
+                        )}
+                        {project.comingSoon && (
+                          <span className="inline-flex items-center text-env-muted select-none">
+                            {"Coming Soon"}
+                          </span>
+                        )}
+                      </div>
+                    </Card>
+                  );
+                })}
               </div>
             )}
 
