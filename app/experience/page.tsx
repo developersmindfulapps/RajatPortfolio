@@ -27,7 +27,7 @@ export default function ExperiencePage() {
             {"Back to Portfolio"}
           </Link>
           <a
-            href="/cv/RajatCvJune.pdf"
+            href="/cv/RajatDeep_Singh_Resume_August.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded-lg bg-exp-btn-bg px-4 py-2 text-xs font-bold uppercase tracking-wider text-exp-btn-text hover:opacity-90 transition-all duration-[250ms] ease-in-out select-none shadow-xs hover:scale-[1.02] focus:ring-2 focus:ring-exp-btn-bg focus:ring-offset-2 outline-none"

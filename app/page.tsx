@@ -163,7 +163,7 @@ export default function Home() {
           <div className="flex gap-2 md:contents">
             {/* Primary CTA (Filled) */}
             <a
-              href="/cv/RajatCvJune.pdf"
+              href="/cv/RajatDeep_Singh_Resume_August.pdf"
               target="_blank"
               rel="noopener noreferrer"
               onClick={trackResumeView}
@@ -512,12 +512,6 @@ export default function Home() {
             Instagram
           </a>
           <span className="text-[10px] text-env-border font-bold select-none">•</span>
-          <a 
-            href="mailto:developers.mindfulapps@gmail.com" 
-            className="text-[10px] font-semibold uppercase tracking-[0.04em] text-env-text hover:opacity-80 transition-opacity"
-          >
-            Email
-          </a>
         </div>
       </footer>
     </div>
