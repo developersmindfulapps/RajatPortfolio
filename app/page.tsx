@@ -173,7 +173,7 @@ export default function Home() {
             </a>
             {/* Secondary CTA (Outlined & Frosted) */}
             <a
-              href="/cv/RajatCvJune.pdf"
+              href="/cv/RajatDeep_Singh_Resume_August.pdf"
               download="Rajat_Deep_Singh_CV.pdf"
               onClick={trackCvDownload}
               className="inline-flex items-center justify-center rounded-lg border border-env-border bg-env-surface/20 backdrop-blur-xs px-4 md:px-5 py-2 md:py-2.5 text-xs font-bold uppercase tracking-wider text-env-text hover:bg-env-surface/40 hover:border-env-text transition-all duration-[250ms] ease-in-out select-none hover:scale-[1.02] focus:ring-2 focus:ring-env-border focus:ring-offset-2 outline-none"
