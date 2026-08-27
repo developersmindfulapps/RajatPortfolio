@@ -5,8 +5,29 @@ import { isCsrfValid } from "@/lib/csrf";
 import { logAdminActivity } from "@/lib/audit";
 import { ObjectId } from "mongodb";
 
+// ─── Security Helpers ─────────────────────────────────────────────────────────
+
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function isValidObjectId(id: string): boolean {
+  return /^[a-f\d]{24}$/i.test(id);
+}
+
+async function requireAdminSession(req: NextRequest) {
+  const sessionCookie = req.cookies.get("admin_session")?.value;
+  return sessionCookie ? await verifySessionToken(sessionCookie) : null;
+}
+
 // GET: Fetch all active messages (excluding soft-deleted ones)
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  // 1. Authenticate
+  const session = await requireAdminSession(req);
+  if (!session) {
+    return NextResponse.json({ success: false, error: "Unauthorized." }, { status: 401 });
+  }
+
   try {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search")?.trim() ?? "";
@@ -14,12 +35,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const contacts = await getCollection("contact_submissions");
 
     // Base filter: exclude soft-deleted messages
-    const filter: any = { status: { $ne: "deleted" } };
+    const filter: Record<string, any> = { status: { $ne: "deleted" } };
 
     if (search) {
+      const safeSearch = escapeRegex(search.slice(0, 100));
       filter.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } }
+        { name: { $regex: safeSearch, $options: "i" } },
+        { email: { $regex: safeSearch, $options: "i" } }
       ];
     }
 
@@ -60,8 +82,7 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
   }
 
   // 2. Authenticate and resolve admin email
-  const sessionCookie = req.cookies.get("admin_session")?.value;
-  const session = sessionCookie ? await verifySessionToken(sessionCookie) : null;
+  const session = await requireAdminSession(req);
   if (!session) {
     return NextResponse.json({ success: false, error: "Unauthorized." }, { status: 401 });
   }
@@ -73,6 +94,13 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
     if (!id || !status) {
       return NextResponse.json(
         { success: false, error: "ID and status are required." },
+        { status: 400 }
+      );
+    }
+
+    if (!isValidObjectId(id)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid message ID format." },
         { status: 400 }
       );
     }
@@ -133,8 +161,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
   }
 
   // 2. Authenticate and resolve admin email
-  const sessionCookie = req.cookies.get("admin_session")?.value;
-  const session = sessionCookie ? await verifySessionToken(sessionCookie) : null;
+  const session = await requireAdminSession(req);
   if (!session) {
     return NextResponse.json({ success: false, error: "Unauthorized." }, { status: 401 });
   }
@@ -146,6 +173,13 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     if (!id) {
       return NextResponse.json(
         { success: false, error: "Message ID is required." },
+        { status: 400 }
+      );
+    }
+
+    if (!isValidObjectId(id)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid message ID format." },
         { status: 400 }
       );
     }

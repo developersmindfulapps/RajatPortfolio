@@ -151,7 +151,7 @@ export default function AdminDashboardLayout({
           </div>
           <div className="flex items-center gap-4">
             <span className="text-xs font-bold font-body text-env-muted bg-env-text/5 px-3.5 py-1.5 rounded-full border border-env-border/30 select-none">
-              developers.mindfulapps@gmail.com
+              Admin Session
             </span>
           </div>
         </header>

@@ -11,15 +11,16 @@ export async function GET() {
     // Run a ping command to verify the connection health
     await db.command({ ping: 1 });
     
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, status: "healthy" });
   } catch (error: any) {
-    console.error("MongoDB health check failed:", error);
+    console.error("[health-check] MongoDB health check failed:", error);
     return NextResponse.json(
       { 
         success: false, 
-        error: error.message || "Failed to establish a connection to MongoDB Atlas" 
+        error: "Database service unavailable." 
       },
-      { status: 500 }
+      { status: 503 }
     );
   }
 }
+

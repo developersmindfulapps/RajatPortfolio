@@ -67,9 +67,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     // 4. Parse Body
     const body: Partial<LoginPayload> = await req.json();
-    const email = body.email?.trim() ?? "";
-    const password = body.password ?? "";
-    const turnstileToken = body.turnstileToken ?? "";
+    const email = (body.email?.trim() ?? "").slice(0, 254);
+    const password = (body.password ?? "").slice(0, 200);
+    const turnstileToken = (body.turnstileToken ?? "").slice(0, 2048);
 
     if (!email || !password || !turnstileToken) {
       return NextResponse.json(
@@ -98,9 +98,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // 6. Verify Admin Email & Password
+    // 6. Verify Admin Email & Password (async bcrypt to avoid blocking event loop)
     const emailMatches = email.toLowerCase() === adminEmail.toLowerCase();
-    const passwordMatches = emailMatches && bcrypt.compareSync(password, adminPasswordHash);
+    const passwordMatches = emailMatches && (await bcrypt.compare(password, adminPasswordHash));
 
     if (!passwordMatches) {
       // Record rate limit failure
@@ -136,7 +136,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       maxAge: 8 * 60 * 60, // 8 hours in seconds
       path: "/"
     });

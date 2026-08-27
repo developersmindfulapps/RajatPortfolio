@@ -40,10 +40,10 @@ export async function GET() {
     const collection = await getCollection<Reference>("references");
     
     // Fetch only recommendations with status 'approved'
-    // Do not include the internal MongoDB _id in the returned array to protect details
+    // Exclude internal MongoDB _id, publicId, and sourceToken to protect internal metadata
     const approvedList = await collection
       .find({ status: "approved" })
-      .project({ _id: 0 })
+      .project({ _id: 0, publicId: 0, sourceToken: 0 })
       .sort({ createdAt: -1 })
       .toArray();
 
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
         { 
           status: 429,
           headers: {
-            "Retry-After": Math.ceil((rateResult.resetTime - Date.now()) / 1000).toString()
+            "Retry-After": "86400"
           }
         }
       );
@@ -99,10 +99,14 @@ export async function POST(request: Request) {
     const comment = sanitizeInput(body.comment);
     const company = body.company ? sanitizeInput(body.company) : undefined;
     const linkedin = body.linkedin ? body.linkedin.trim() : undefined;
-    const sourceToken = body.sourceToken ? sanitizeInput(body.sourceToken) : undefined;
+    const sourceToken = body.sourceToken ? sanitizeInput(body.sourceToken).slice(0, 200) : undefined;
 
     if (!name) {
       return NextResponse.json({ success: false, error: "Name is required." }, { status: 400 });
+    }
+
+    if (name.length > 100) {
+      return NextResponse.json({ success: false, error: "Name cannot exceed 100 characters." }, { status: 400 });
     }
 
     const validRelationships = ["coworker", "client", "manager"];
@@ -113,8 +117,8 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!comment) {
-      return NextResponse.json({ success: false, error: "Comment is required." }, { status: 400 });
+    if (!comment || comment.length < 10) {
+      return NextResponse.json({ success: false, error: "Comment must be at least 10 characters." }, { status: 400 });
     }
 
     if (comment.length > 1200) {
@@ -124,11 +128,17 @@ export async function POST(request: Request) {
       );
     }
 
-    if (linkedin && !isValidUrl(linkedin)) {
-      return NextResponse.json(
-        { success: false, error: "Invalid LinkedIn URL format." },
-        { status: 400 }
-      );
+    if (company && company.length > 100) {
+      return NextResponse.json({ success: false, error: "Company cannot exceed 100 characters." }, { status: 400 });
+    }
+
+    if (linkedin) {
+      if (linkedin.length > 300 || !isValidUrl(linkedin)) {
+        return NextResponse.json(
+          { success: false, error: "Invalid LinkedIn URL format." },
+          { status: 400 }
+        );
+      }
     }
 
     // 4. Create and Save Document

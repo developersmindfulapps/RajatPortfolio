@@ -32,7 +32,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     value: "",
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
     expires: new Date(0),
     path: "/"
   });

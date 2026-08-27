@@ -1,7 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCollection } from "@/lib/mongodb";
+import { verifySessionToken } from "@/lib/session";
+
+// ─── Auth helper ───────────────────────────────────────────────────────────────
+
+async function requireAdminSession(req: NextRequest) {
+  const sessionCookie = req.cookies.get("admin_session")?.value;
+  return sessionCookie ? await verifySessionToken(sessionCookie) : null;
+}
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  // Require valid admin session — this endpoint contains sensitive analytics data
+  const session = await requireAdminSession(req);
+  if (!session) {
+    return NextResponse.json(
+      { success: false, error: "Unauthorized." },
+      { status: 401 }
+    );
+  }
+
   try {
     const analytics = await getCollection("analytics_events");
 
@@ -63,3 +80,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     );
   }
 }
+
+
+

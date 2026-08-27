@@ -18,6 +18,15 @@ interface TurnstileVerifyResponse {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 function validatePayload(body: Partial<ContactPayload>): string | null {
   const name = body.name?.trim() ?? "";
   const email = body.email?.trim() ?? "";
@@ -26,14 +35,20 @@ function validatePayload(body: Partial<ContactPayload>): string | null {
   if (!name || name.length < 2) {
     return "Name must be at least 2 characters.";
   }
+  if (name.length > 100) {
+    return "Name cannot exceed 100 characters.";
+  }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email || !emailRegex.test(email)) {
-    return "A valid email address is required.";
+  if (!email || !emailRegex.test(email) || email.length > 254) {
+    return "A valid email address is required (max 254 characters).";
   }
 
   if (!message || message.length < 10) {
     return "Message must be at least 10 characters.";
+  }
+  if (message.length > 5000) {
+    return "Message cannot exceed 5000 characters.";
   }
 
   if (!body.turnstileToken) {
@@ -125,12 +140,16 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       console.error("[contact-api] Failed to save contact submission to MongoDB:", dbErr);
     }
 
-    // 5. Send email via Resend
+    // 5. Send email via Resend with HTML-escaped content
     const timestamp = new Date().toLocaleString("en-GB", {
       dateStyle: "full",
       timeStyle: "short",
       timeZone: "Asia/Kolkata",
     });
+
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeMessage = escapeHtml(message);
 
     const { error: resendError } = await resend.emails.send({
       from: "Portfolio Contact <onboarding@resend.dev>",
@@ -143,11 +162,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
             <tr>
               <td style="padding: 8px 0; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; width: 80px;">Name</td>
-              <td style="padding: 8px 0; font-size: 14px;">${name}</td>
+              <td style="padding: 8px 0; font-size: 14px;">${safeName}</td>
             </tr>
             <tr>
               <td style="padding: 8px 0; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">Email</td>
-              <td style="padding: 8px 0; font-size: 14px;"><a href="mailto:${email}" style="color: #2563eb;">${email}</a></td>
+              <td style="padding: 8px 0; font-size: 14px;"><a href="mailto:${safeEmail}" style="color: #2563eb;">${safeEmail}</a></td>
             </tr>
             <tr>
               <td style="padding: 8px 0; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">Sent</td>
@@ -156,7 +175,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           </table>
           <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
           <h3 style="margin-top: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">Message</h3>
-          <p style="font-size: 15px; line-height: 1.6; white-space: pre-wrap; margin: 0;">${message}</p>
+          <p style="font-size: 15px; line-height: 1.6; white-space: pre-wrap; margin: 0;">${safeMessage}</p>
         </div>
       `,
     });
