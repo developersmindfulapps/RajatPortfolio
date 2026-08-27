@@ -10,7 +10,19 @@ import { Card } from "@/components/shared/Card";
 import { PROJECTS } from "@/lib/projects";
 import { Project, SocialLink } from "@/types/portfolio";
 import { GithubIcon, LinkedinIcon, InstagramIcon } from "@/components/shared/Icons";
-import { ExternalLink, Code2, Server, Database, Palette } from "lucide-react";
+import { 
+  ExternalLink, 
+  Code2, 
+  Layers, 
+  Sliders, 
+  Cpu, 
+  Cloud, 
+  ShieldCheck, 
+  Bot, 
+  Sparkles, 
+  ArrowRight 
+} from "lucide-react";
+import { SKILL_GROUPS, FAMILIAR_WITH } from "@/lib/skills";
 import { SceneSelector } from "@/components/navigation/SceneSelector";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { RecommendationsPanel } from "@/components/panels/RecommendationsPanel";
@@ -313,7 +325,7 @@ export default function Home() {
                               className="inline-flex items-center gap-1 hover:text-env-text transition-colors text-env-muted font-body"
                             >
                               <ExternalLink className="h-3 w-3" />
-                              {"Visit Website →"}
+                              {project.ctaText || "Visit Website →"}
                             </a>
                           )
                         )}
@@ -338,66 +350,82 @@ export default function Home() {
 
             {activeNode === "skills" && (
               <div className="space-y-4">
-                <p className="text-env-muted font-body">
-                  A breakdown of core engineering proficiencies developed over 8 years of production development:
+                <p className="text-xs text-env-muted font-body leading-relaxed">
+                  Core engineering proficiencies and architectural capabilities developed over 8+ years of enterprise and product development:
                 </p>
-                <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 mt-4">
-                  {/* Frontend */}
-                  <div className="rounded-xl border border-env-border bg-env-text/5 p-4">
-                    <div className="flex items-center gap-2">
-                      <Code2 className="h-4 w-4 text-env-text" />
-                      <h5 className="font-bold text-env-text text-xs uppercase tracking-wider font-heading">Frontend</h5>
-                    </div>
-                    <ul className="mt-2.5 text-xs text-env-muted space-y-1.5 font-body">
-                      <li>Angular</li>
-                      <li>React</li>
-                      <li>Next.js</li>
-                      <li>TypeScript</li>
-                      <li>JavaScript</li>
-                      <li>HTML5 &amp; CSS3</li>
-                    </ul>
-                  </div>
 
-                  {/* Backend */}
-                  <div className="rounded-xl border border-env-border bg-env-text/5 p-4">
-                    <div className="flex items-center gap-2">
-                      <Server className="h-4 w-4 text-env-text" />
-                      <h5 className="font-bold text-env-text text-xs uppercase tracking-wider font-heading">Backend</h5>
-                    </div>
-                    <ul className="mt-2.5 text-xs text-env-muted space-y-1.5 font-body">
-                      <li>Node.js</li>
-                      <li>Express.js</li>
-                      <li>Python</li>
-                      <li>REST APIs</li>
-                    </ul>
-                  </div>
+                {/* 2-Column Responsive Compact Grid */}
+                <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 mt-2">
+                  {SKILL_GROUPS.map((group) => {
+                    const getIcon = (id: string) => {
+                      switch (id) {
+                        case "frontend-core": return Code2;
+                        case "state-architecture": return Layers;
+                        case "ui-dataviz": return Sliders;
+                        case "apis-backend": return Cpu;
+                        case "data-cloud": return Cloud;
+                        case "testing-delivery": return ShieldCheck;
+                        case "ai-assisted": return Bot;
+                        default: return Code2;
+                      }
+                    };
+                    const Icon = getIcon(group.id);
 
-                  {/* Databases */}
-                  <div className="rounded-xl border border-env-border bg-env-text/5 p-4">
-                    <div className="flex items-center gap-2">
-                      <Database className="h-4 w-4 text-env-text" />
-                      <h5 className="font-bold text-env-text text-xs uppercase tracking-wider font-heading">Databases</h5>
-                    </div>
-                    <ul className="mt-2.5 text-xs text-env-muted space-y-1.5 font-body">
-                      <li>MongoDB</li>
-                      <li>PostgreSQL</li>
-                      <li>SQL</li>
-                    </ul>
-                  </div>
+                    return (
+                      <div 
+                        key={group.id} 
+                        className="rounded-xl border border-env-border/60 bg-env-text/5 p-3.5 space-y-2 flex flex-col justify-start"
+                      >
+                        <div className="flex items-center gap-2 border-b border-env-border/20 pb-2">
+                          <Icon className="h-3.5 w-3.5 text-env-text shrink-0" />
+                          <h5 className="font-bold text-env-text text-[11px] uppercase tracking-wider font-heading truncate">
+                            {group.title}
+                          </h5>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5 pt-0.5">
+                          {group.skills.map((skill) => (
+                            <span 
+                              key={skill} 
+                              className="text-[10px] font-semibold tracking-wide px-2 py-0.5 rounded-md bg-env-text/5 text-env-text border border-env-border/30 hover:border-env-text/40 transition-colors select-none"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
 
-                  {/* Design & Engineering */}
-                  <div className="rounded-xl border border-env-border bg-env-text/5 p-4">
-                    <div className="flex items-center gap-2">
-                      <Palette className="h-4 w-4 text-env-text" />
-                      <h5 className="font-bold text-env-text text-xs uppercase tracking-wider font-heading">Design &amp; Engineering</h5>
-                    </div>
-                    <ul className="mt-2.5 text-xs text-env-muted space-y-1.5 font-body">
-                      <li>Figma</li>
-                      <li>Responsive UI/UX</li>
-                      <li>Performance Optimization</li>
-                      <li>Git &amp; CI/CD</li>
-                    </ul>
+                {/* Visually separate "Also Familiar With" section */}
+                <div className="rounded-xl border border-env-border/40 bg-env-text/[0.03] p-3.5 space-y-2 select-none">
+                  <div className="flex items-center gap-1.5 text-env-muted">
+                    <Sparkles className="h-3 w-3 text-env-muted" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-env-muted">
+                      Also familiar with
+                    </span>
                   </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {FAMILIAR_WITH.map((skill) => (
+                      <span 
+                        key={skill} 
+                        className="text-[10px] font-medium tracking-wide px-2 py-0.5 rounded-md bg-env-text/[0.03] text-env-muted border border-env-border/20"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Direct link to deep experience page */}
+                <div className="pt-2 flex items-center justify-between border-t border-env-border/20 text-xs">
+                  <Link
+                    href="/experience"
+                    className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-env-muted hover:text-env-text transition-colors"
+                  >
+                    <span>View full career timeline &amp; architectural details</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </Link>
                 </div>
               </div>
             )}

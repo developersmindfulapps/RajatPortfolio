@@ -28,15 +28,25 @@ export const PROJECTS: Project[] = [
     id: "project-enterprise",
     title: "Enterprise Frontend Engineering",
     description: "Over the past 8+ years, I've worked on large-scale enterprise platforms for Fortune 500 companies and industry-leading organizations. Much of this work is protected by client confidentiality, but the experience has shaped how I approach architecture, usability, maintainability, and long-term product development.",
-    tags: ["Angular", "TypeScript", "JavaScript", "RxJS", "REST APIs", "Node.js"],
+    tags: ["Angular", "React", "TypeScript", "Microfrontends", "RxJS", "AG Grid", "Developer Tooling"],
     link: "/experience",
+    ctaText: "View Experience →"
   },
   {
-    id: "project-eventually",
-    title: "EventUally",
-    description: "A mobile-first event planning platform designed to simplify group coordination. EventUally helps friends, families, and communities organize events, manage RSVPs, coordinate venues, and keep everyone on the same page without endless messaging threads. Built with a strong focus on privacy, usability, and reducing the friction involved in planning group events.",
-    tags: ["React Native", "Node.js", "PostgreSQL", "Event Planning", "Mobile App"],
-    comingSoon: true,
+    id: "project-bat-cave",
+    title: "Bat Cave",
+    description:
+      "A modern web platform for an indoor cricket facility in Baramulla, built to make discovering services and booking practice sessions simpler through a guided, multi-step digital booking experience.",
+    tags: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Tailwind CSS",
+      "Booking System",
+      "Responsive Design",
+    ],
+    link: "https://bat-cave-theta.vercel.app/",
+    ctaText: "Visit Website →",
   },
   {
     id: "project-law-practice",
@@ -44,5 +54,12 @@ export const PROJECTS: Project[] = [
     description: "Built a modern website platform for a well-known legal professional. Beyond a traditional landing page, the platform gives complete control over website content through a secure admin experience, allowing updates without touching code or databases. Integrated consultation workflows using Resend and Twilio, while maintaining strong SEO foundations and mobile responsiveness.",
     tags: ["Next.js", "Node.js", "Resend", "Twilio", "SEO", "Responsive Design"],
     link: "https://altafs-website-6pmd.vercel.app/",
+  },
+  {
+    id: "project-eventually",
+    title: "EventUally",
+    description: "A mobile-first event planning platform designed to simplify group coordination. EventUally helps friends, families, and communities organize events, manage RSVPs, coordinate venues, and keep everyone on the same page without endless messaging threads. Built with a strong focus on privacy, usability, and reducing the friction involved in planning group events.",
+    tags: ["React Native", "Node.js", "PostgreSQL", "Event Planning", "Mobile App"],
+    comingSoon: true,
   },
 ];
