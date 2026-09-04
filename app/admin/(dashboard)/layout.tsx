@@ -13,7 +13,8 @@ import {
   Menu, 
   X, 
   ShieldAlert,
-  ChevronRight
+  ChevronRight,
+  ExternalLink
 } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 
@@ -65,28 +66,39 @@ export default function AdminDashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-radial-[at_50%_50%] from-env-surface/40 via-env-surface/80 to-env-surface flex flex-col md:flex-row relative text-env-text">
+    <div className="min-h-screen bg-env-surface/90 backdrop-blur-xl flex flex-col md:flex-row relative text-env-text transition-colors">
       
       {/* Background Subtle Mesh Grid */}
       <div className="fixed inset-0 z-0 bg-[linear-gradient(to_right,var(--env-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--env-border)_1px,transparent_1px)] bg-[size:5rem_5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-5 pointer-events-none" />
 
       {/* Mobile Top Navbar */}
-      <header className="md:hidden flex items-center justify-between px-6 py-4 bg-env-surface/80 border-b border-env-border/40 backdrop-blur-md sticky top-0 z-50 w-full">
+      <header className="md:hidden flex items-center justify-between px-6 py-4 bg-env-surface/95 border-b border-env-border/30 backdrop-blur-md sticky top-0 z-50 w-full shadow-xs">
         <div className="flex items-center gap-2">
           <ShieldAlert className="h-5 w-5 text-env-text" />
           <span className="font-bold text-sm tracking-wider uppercase">Admin Portal</span>
         </div>
-        <button 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 text-env-text/80 hover:text-env-text transition-colors outline-none"
-        >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-env-border/40 bg-env-surface hover:bg-env-text/10 text-env-text text-[10px] font-bold uppercase tracking-wider transition-all select-none shadow-xs"
+          >
+            <ExternalLink className="h-3 w-3" />
+            <span>Portfolio</span>
+          </a>
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 text-env-text/80 hover:text-env-text transition-colors outline-none"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </header>
 
       {/* Sidebar - Desktop & Mobile Drawer */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-64 bg-env-surface/90 border-r border-env-border/40 backdrop-blur-lg px-6 py-8 flex flex-col justify-between transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-screen md:bg-env-surface/50
+        fixed inset-y-0 left-0 z-40 w-64 bg-env-surface/95 border-r border-env-border/30 backdrop-blur-xl px-6 py-8 flex flex-col justify-between transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-screen md:bg-env-surface/85
         ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
       `}>
         <div className="space-y-8">
@@ -112,7 +124,7 @@ export default function AdminDashboardLayout({
                   className={`
                     flex items-center justify-between px-4 py-3 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all select-none group
                     ${isActive 
-                      ? "bg-env-text/10 text-env-text border-l-2 border-env-text pl-3" 
+                      ? "bg-env-text/10 text-env-text border-l-2 border-env-text pl-3 shadow-xs" 
                       : "text-env-muted hover:text-env-text hover:bg-env-text/5"}
                   `}
                 >
@@ -128,11 +140,11 @@ export default function AdminDashboardLayout({
         </div>
 
         {/* Sidebar Footer (Logout) */}
-        <div className="border-t border-env-border/40 pt-6">
+        <div className="border-t border-env-border/30 pt-6">
           <button
             onClick={handleLogout}
             disabled={isLoggingOut}
-            className="w-full flex items-center gap-3.5 px-4 py-3 rounded-lg text-xs font-semibold uppercase tracking-wider text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-all select-none disabled:opacity-50"
+            className="w-full flex items-center gap-3.5 px-4 py-3 rounded-lg text-xs font-semibold uppercase tracking-wider text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-red-500/10 transition-all select-none disabled:opacity-50"
           >
             <LogOut className="h-4.5 w-4.5" />
             <span>{isLoggingOut ? "Signing Out..." : "Sign Out"}</span>
@@ -143,14 +155,23 @@ export default function AdminDashboardLayout({
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-y-auto relative z-10 custom-scrollbar">
         {/* Top Navbar Desktop Only */}
-        <header className="hidden md:flex items-center justify-between px-8 py-5 border-b border-env-border/20 bg-env-surface/20 backdrop-blur-xs sticky top-0 z-30">
+        <header className="hidden md:flex items-center justify-between px-8 py-5 border-b border-env-border/30 bg-env-surface/90 backdrop-blur-md sticky top-0 z-30 shadow-xs">
           <div>
             <h2 className="text-sm font-bold tracking-widest uppercase text-env-text">
               {SIDEBAR_ITEMS.find((item) => pathname.startsWith(item.href))?.name || "Dashboard"}
             </h2>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-xs font-bold font-body text-env-muted bg-env-text/5 px-3.5 py-1.5 rounded-full border border-env-border/30 select-none">
+          <div className="flex items-center gap-3">
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-env-border/50 bg-env-surface/80 hover:bg-env-text/10 text-env-text text-xs font-bold font-body uppercase tracking-wider transition-all select-none shadow-xs hover:border-env-text/60"
+            >
+              <ExternalLink className="h-3.5 w-3.5 opacity-80" />
+              <span>Portfolio</span>
+            </a>
+            <span className="text-xs font-bold font-body text-env-text bg-env-text/10 px-3.5 py-1.5 rounded-full border border-env-border/40 select-none shadow-xs">
               Admin Session
             </span>
           </div>

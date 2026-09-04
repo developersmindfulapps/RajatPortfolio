@@ -131,10 +131,10 @@ export default function AdminRecommendationsPage() {
     <div className="space-y-6 animate-fade-in">
       
       {/* Control bar: Tabs & Search */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-env-border/20 bg-env-surface/40 backdrop-blur-xs">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-env-border/30 bg-env-surface/85 backdrop-blur-md shadow-xs">
         
         {/* Tabs */}
-        <div className="flex gap-1.5 p-1 bg-env-text/5 rounded-lg border border-env-border/20 w-full sm:w-auto">
+        <div className="flex gap-1.5 p-1 bg-env-text/10 rounded-lg border border-env-border/30 w-full sm:w-auto">
           {(["pending", "approved", "rejected"] as const).map((tab) => (
             <button
               key={tab}
@@ -142,8 +142,8 @@ export default function AdminRecommendationsPage() {
               className={`
                 flex-1 sm:flex-initial px-4 py-2 rounded-md text-[10px] font-bold uppercase tracking-wider select-none transition-all
                 ${statusTab === tab 
-                  ? "bg-env-text text-env-surface shadow-xs" 
-                  : "text-env-muted hover:text-env-text hover:bg-env-text/5"}
+                  ? "bg-env-text text-env-surface shadow-xs font-extrabold" 
+                  : "text-env-muted hover:text-env-text hover:bg-env-text/10 font-bold"}
               `}
             >
               {tab}
@@ -159,7 +159,7 @@ export default function AdminRecommendationsPage() {
             placeholder="Search by Name or Company..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-env-border bg-env-surface/50 text-xs outline-none focus:border-env-text focus:bg-env-surface transition-all text-env-text font-body"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-env-border/60 bg-env-surface/90 text-xs outline-none focus:border-env-text focus:bg-env-surface transition-all text-env-text font-body"
           />
         </div>
 
@@ -177,7 +177,7 @@ export default function AdminRecommendationsPage() {
           <p className="text-xs text-red-400 leading-relaxed font-body">{error}</p>
         </div>
       ) : recs.length === 0 ? (
-        <Card hoverEffect={false} className="p-12 text-center text-env-muted italic bg-env-surface/20 border-env-border/20 select-none">
+        <Card hoverEffect={false} className="p-12 text-center text-env-muted italic bg-env-surface/85 border-env-border/30 shadow-xs select-none">
           No {statusTab} recommendations found.
         </Card>
       ) : (
@@ -186,7 +186,7 @@ export default function AdminRecommendationsPage() {
             <Card 
               key={rec._id} 
               hoverEffect={false} 
-              className="bg-env-surface/30 border-env-border/20 p-6 flex flex-col justify-between"
+              className="bg-env-surface/85 backdrop-blur-md border-env-border/30 shadow-xs p-6 flex flex-col justify-between"
             >
               <div className="space-y-4">
                 {/* Header: Name, Relationship & Company */}
@@ -211,7 +211,7 @@ export default function AdminRecommendationsPage() {
                 </div>
 
                 {/* Body Text */}
-                <div className="bg-env-text/5 p-4 rounded-lg border border-env-border/10">
+                <div className="bg-env-text/5 p-4 rounded-lg border border-env-border/20">
                   <p className="text-xs text-env-text leading-relaxed font-body whitespace-pre-wrap select-text">
                     "{rec.comment}"
                   </p>
@@ -249,7 +249,7 @@ export default function AdminRecommendationsPage() {
                     size="sm"
                     disabled={isMutating !== null}
                     onClick={() => handleUpdateStatus(rec._id, "approved")}
-                    className="h-8.5 px-3 border-green-500/20 bg-green-500/5 hover:bg-green-500/10 text-green-400 text-[10px] font-bold uppercase tracking-wider"
+                    className="h-8.5 px-3 border-green-500/30 bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 text-[10px] font-bold uppercase tracking-wider"
                   >
                     {isMutating === rec._id ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -268,7 +268,7 @@ export default function AdminRecommendationsPage() {
                     size="sm"
                     disabled={isMutating !== null}
                     onClick={() => handleUpdateStatus(rec._id, "rejected")}
-                    className="h-8.5 px-3 border-orange-500/20 bg-orange-500/5 hover:bg-orange-500/10 text-orange-400 text-[10px] font-bold uppercase tracking-wider"
+                    className="h-8.5 px-3 border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-[10px] font-bold uppercase tracking-wider"
                   >
                     {isMutating === rec._id ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -286,7 +286,7 @@ export default function AdminRecommendationsPage() {
                   size="sm"
                   disabled={isMutating !== null}
                   onClick={() => handleDelete(rec._id)}
-                  className="h-8.5 px-3 border-red-500/20 bg-red-500/5 hover:bg-red-500/10 text-red-400 text-[10px] font-bold uppercase tracking-wider"
+                  className="h-8.5 px-3 border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-400 text-[10px] font-bold uppercase tracking-wider"
                 >
                   {isMutating === rec._id ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />

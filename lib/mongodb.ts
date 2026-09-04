@@ -1,4 +1,11 @@
 import { MongoClient, Db, Collection, Document } from "mongodb";
+import dns from "dns";
+
+if (typeof window === "undefined") {
+  try {
+    dns.setServers(["8.8.8.8", "1.1.1.1"]);
+  } catch (_) {}
+}
 
 const options = {};
 
@@ -15,6 +22,10 @@ export async function getMongoClient(): Promise<MongoClient> {
     throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
   }
 
+  try {
+    dns.setServers(["8.8.8.8", "1.1.1.1"]);
+  } catch (_) {}
+
   if (process.env.NODE_ENV === "development") {
     // In development mode, use a global variable so that the value
     // is preserved across module reloads caused by HMR (Hot Module Replacement).
@@ -24,7 +35,10 @@ export async function getMongoClient(): Promise<MongoClient> {
 
     if (!globalWithMongo._mongoClientPromise) {
       client = new MongoClient(uri, options);
-      globalWithMongo._mongoClientPromise = client.connect();
+      globalWithMongo._mongoClientPromise = client.connect().catch((err) => {
+        delete globalWithMongo._mongoClientPromise;
+        throw err;
+      });
     }
     return globalWithMongo._mongoClientPromise;
   }
@@ -32,7 +46,10 @@ export async function getMongoClient(): Promise<MongoClient> {
   // Defer connection creation in production/build-time until explicitly requested
   if (!clientPromise) {
     client = new MongoClient(uri, options);
-    clientPromise = client.connect();
+    clientPromise = client.connect().catch((err) => {
+      clientPromise = undefined as any;
+      throw err;
+    });
   }
   return clientPromise;
 }

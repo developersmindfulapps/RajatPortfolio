@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 :root, [data-theme="day"] {
-  --env-text: rgba(25, 25, 25, 0.92);
-  --env-text-muted: rgba(25, 25, 25, 0.6);
-  --env-surface: rgba(255, 255, 255, 0.5);
-  --env-border: rgba(18, 18, 18, 0.08);
+  --env-text: #0f172a;
+  --env-text-muted: #334155;
+  --env-surface: rgba(255, 255, 255, 0.88);
+  --env-border: rgba(15, 23, 42, 0.12);
   --env-glow: 0 0 0px transparent;
   --env-blur: 24px;
-  --env-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  --env-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   --env-text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
   
   /* Central Node Day Adjustments */
-  --env-center-bg: rgba(255, 255, 255, 0.82);
-  --env-center-border: rgba(255, 255, 255, 0.6);
-  --env-center-text: #111827;
+  --env-center-bg: rgba(255, 255, 255, 0.92);
+  --env-center-border: rgba(15, 23, 42, 0.2);
+  --env-center-text: #0f172a;
   
   /* Line Day Adjustments */
   --env-line-filter: drop-shadow(0px 1px 1.5px rgba(0, 0, 0, 0.22));
   --env-line-opacity-idle: 0.38;
 
   /* Custom Scrollbar */
-  --scrollbar-thumb: rgba(25, 25, 25, 0.18);
-  --scrollbar-thumb-hover: rgba(25, 25, 25, 0.25);
+  --scrollbar-thumb: rgba(15, 23, 42, 0.2);
+  --scrollbar-thumb-hover: rgba(15, 23, 42, 0.35);
 }
 
 [data-theme="night"] {
@@ -73,27 +73,27 @@
 }
 
 [data-theme="sunrise"] {
-  --env-text: #111827;
-  --env-text-muted: rgba(17, 24, 39, 0.6);
-  --env-surface: rgba(245, 240, 230, 0.55);
-  --env-border: rgba(28, 25, 23, 0.08);
+  --env-text: #1c1917;
+  --env-text-muted: #44403c;
+  --env-surface: rgba(252, 248, 240, 0.90);
+  --env-border: rgba(28, 25, 23, 0.12);
   --env-glow: 0 0 10px rgba(253, 224, 71, 0.05);
   --env-blur: 24px;
-  --env-shadow: 0 8px 32px rgba(28, 25, 23, 0.04);
+  --env-shadow: 0 8px 32px rgba(28, 25, 23, 0.06);
   --env-text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
   
   /* Central Node Sunrise Adjustments */
-  --env-center-bg: rgba(255, 255, 255, 0.75);
-  --env-center-border: rgba(28, 25, 23, 0.15);
-  --env-center-text: #111827;
+  --env-center-bg: rgba(255, 255, 255, 0.92);
+  --env-center-border: rgba(28, 25, 23, 0.2);
+  --env-center-text: #1c1917;
   
   /* Line Sunrise Adjustments */
   --env-line-filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.12));
   --env-line-opacity-idle: 0.38;
 
   /* Custom Scrollbar */
-  --scrollbar-thumb: rgba(17, 24, 39, 0.18);
-  --scrollbar-thumb-hover: rgba(17, 24, 39, 0.25);
+  --scrollbar-thumb: rgba(28, 25, 23, 0.2);
+  --scrollbar-thumb-hover: rgba(28, 25, 23, 0.35);
 }
 
 /* Day and Sunrise themes idle constellation overrides */

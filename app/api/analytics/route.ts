@@ -56,17 +56,25 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const country = req.headers.get("x-vercel-ip-country") || null;
 
+    let cleanRoute = "/";
+    if (typeof route === "string" && route.trim().length > 0) {
+      cleanRoute = route.trim().slice(0, 100);
+      if (!cleanRoute.startsWith("/")) {
+        cleanRoute = "/" + cleanRoute;
+      }
+    }
+
     const event: AnalyticsEvent = {
       eventType,
       timestamp: new Date(),
-      route: String(route).slice(0, 200),
-      referrer: String(referrer).slice(0, 500),
+      route: cleanRoute,
+      referrer: String(referrer).slice(0, 300),
       deviceType: String(deviceType).slice(0, 50),
       browser: String(browser).slice(0, 50),
       sessionId: String(sessionId).slice(0, 100),
       country: country ? String(country).slice(0, 10) : null,
-      ...(project && typeof project === "string" ? { project: project.slice(0, 100) } : {}),
-      ...(page && typeof page === "string" ? { page: page.slice(0, 100) } : {})
+      ...(project && typeof project === "string" ? { project: project.trim().slice(0, 100) } : {}),
+      ...(page && typeof page === "string" ? { page: page.trim().slice(0, 100) } : {})
     };
 
     const collection = await getCollection<AnalyticsEvent>("analytics_events");

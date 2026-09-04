@@ -5,6 +5,8 @@ import { isCsrfValid } from "@/lib/csrf";
 import { logAdminActivity } from "@/lib/audit";
 import { ObjectId } from "mongodb";
 
+export const dynamic = "force-dynamic";
+
 // ─── Security Helpers ─────────────────────────────────────────────────────────
 
 function escapeRegex(str: string): string {
@@ -20,7 +22,7 @@ async function requireAdminSession(req: NextRequest) {
   return sessionCookie ? await verifySessionToken(sessionCookie) : null;
 }
 
-// GET: Fetch all active messages (excluding soft-deleted ones)
+// GET: Fetch all active messages
 export async function GET(req: NextRequest): Promise<NextResponse> {
   // 1. Authenticate
   const session = await requireAdminSession(req);
@@ -34,34 +36,40 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const contacts = await getCollection("contact_submissions");
 
-    // Base filter: exclude soft-deleted messages
-    const filter: Record<string, any> = { status: { $ne: "deleted" } };
+    const searchFilter: Record<string, any> = {};
 
     if (search) {
       const safeSearch = escapeRegex(search.slice(0, 100));
-      filter.$or = [
+      searchFilter.$or = [
         { name: { $regex: safeSearch, $options: "i" } },
         { email: { $regex: safeSearch, $options: "i" } }
       ];
     }
 
-    // Unread messages should appear first, followed by others, sorted newest first
+    // Unread messages should appear first, followed by others (read/archived), sorted newest first
     const unreadMessages = await contacts
-      .find({ ...filter, status: "unread" })
+      .find({ ...searchFilter, status: "unread" })
       .sort({ createdAt: -1 })
       .toArray();
 
     const otherMessages = await contacts
-      .find({ ...filter, status: { $ne: "unread" } })
+      .find({ ...searchFilter, status: { $in: ["read", "archived"] } })
       .sort({ createdAt: -1 })
       .toArray();
 
     const allMessages = [...unreadMessages, ...otherMessages];
 
-    return NextResponse.json({
-      success: true,
-      messages: allMessages
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        messages: allMessages
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate"
+        }
+      }
+    );
   } catch (error) {
     console.error("[admin-contact-get] Failed to fetch contacts:", error);
     return NextResponse.json(
@@ -105,7 +113,7 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    if (!["unread", "read", "archived", "deleted"].includes(status)) {
+    if (!["unread", "read", "archived"].includes(status)) {
       return NextResponse.json(
         { success: false, error: "Invalid status value." },
         { status: 400 }
@@ -130,7 +138,6 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
     if (status === "read") auditAction = "contact_marked_read";
     else if (status === "archived") auditAction = "contact_archived";
     else if (status === "unread") auditAction = "contact_marked_unread";
-    else if (status === "deleted") auditAction = "contact_soft_deleted";
 
     await logAdminActivity(
       session.email,
@@ -150,7 +157,7 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
   }
 }
 
-// DELETE: Soft delete a message (sets status to "deleted")
+// DELETE: Permanently delete a message
 export async function DELETE(req: NextRequest): Promise<NextResponse> {
   // 1. CSRF Verification
   if (!isCsrfValid(req)) {
@@ -185,30 +192,27 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     }
 
     const contacts = await getCollection("contact_submissions");
-    const result = await contacts.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { status: "deleted", updatedAt: new Date() } }
-    );
+    const result = await contacts.deleteOne({ _id: new ObjectId(id) });
 
-    if (result.matchedCount === 0) {
+    if (result.deletedCount === 0) {
       return NextResponse.json(
         { success: false, error: "Message not found." },
         { status: 404 }
       );
     }
 
-    // 3. Log soft delete action to audit trail
+    // 3. Log delete action to audit trail
     await logAdminActivity(
       session.email,
-      "contact_soft_deleted",
+      "contact_deleted",
       "contact",
       id,
       req
     );
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, deletedCount: result.deletedCount });
   } catch (error) {
-    console.error("[admin-contact-delete] Failed to soft delete message:", error);
+    console.error("[admin-contact-delete] Failed to delete message:", error);
     return NextResponse.json(
       { success: false, error: "Failed to delete message." },
       { status: 500 }

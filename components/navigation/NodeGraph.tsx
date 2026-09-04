@@ -149,18 +149,17 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
     }
 
     // 3. Collision-safe logic against the fixed hero section
-    // Hero occupies top-left region: width ~440px, height ~340px.
+    // Hero occupies top-left region: width ~480px (with 3 action buttons), height ~340px.
     // Calculate the actual center of the constellation relative to the viewport:
     const constellationViewportCenterX = (isPanelOpen && viewportWidth >= 1024)
       ? (viewportWidth - gap - panelWidth) / 2 + x
       : (viewportWidth / 2) + x;
 
-    // Detect actual visual overlap between leftmost/topmost node and the hero section
-    // leftmost node is About node at x = -240 * scale; topmost is Recommendations at y = -220 * scale
+    // Detect actual visual overlap between leftmost node (About at x = -240 * scale) and the hero section
     const nodeX = constellationViewportCenterX - 240 * scale;
-    const nodeY = (viewportHeight / 2) - 220 * scale;
+    const nodeY = (viewportHeight / 2) - 120 * scale;
 
-    const heroWidth = 440;
+    const heroWidth = 480;
     const heroHeight = 340;
 
     if (nodeX < heroWidth && nodeY < heroHeight) {
@@ -198,6 +197,17 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
     }
 
     return { transX: x, transY: y };
+  })();
+
+  // Determine if About label should sit on TOP instead of LEFT to prevent collision with hero buttons:
+  // - On standard resolutions, side nodes have labels on their outer sides (Left for About & Work With Me, Right for Projects & Skills).
+  // - When zoomed in (e.g. 125%) or on narrower screens where clearance from hero action buttons (< 490px) is tight, About switches to TOP.
+  const isAboutOnTop = (() => {
+    if (isMobile) return true;
+    const aboutNodeViewportCenterX = (viewportWidth / 2) + transX - (240 * scale);
+    const aboutLabelLeftEdge = aboutNodeViewportCenterX - 180;
+    const heroButtonsRightEdge = 490;
+    return aboutLabelLeftEdge < heroButtonsRightEdge;
   })();
 
   return (
@@ -360,9 +370,11 @@ export function NodeGraph({ activeNodeId, onNodeClick }: NodeGraphProps) {
               ? "top-16 left-1/2 -translate-x-1/2 text-center mt-1 w-28"
               : node.id === "recommendations"
                 ? "bottom-16 left-1/2 -translate-x-1/2 text-center w-40"
-                : node.x < 0 
-                  ? "right-16 top-1/2 -translate-y-1/2 text-right mr-3 w-32" 
-                  : "left-16 top-1/2 -translate-y-1/2 text-left ml-3 w-32";
+                : node.id === "about" && isAboutOnTop
+                  ? "bottom-16 left-1/2 -translate-x-1/2 text-center w-28"
+                  : node.x < 0 
+                    ? "right-16 top-1/2 -translate-y-1/2 text-right mr-3 w-32" 
+                    : "left-16 top-1/2 -translate-y-1/2 text-left ml-3 w-32";
 
             const isNodeIdle = !isActive && hoveredNodeId !== node.id;
             const iconStyle = isDayOrSunrise && isNodeIdle ? {

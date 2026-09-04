@@ -77,14 +77,14 @@ export default function AdminAnalyticsPage() {
 
   const getEventBadgeClass = (type: string) => {
     switch (type) {
-      case "portfolio_visit": return "bg-blue-500/10 text-blue-400 border border-blue-500/20";
-      case "resume_view": return "bg-purple-500/10 text-purple-400 border border-purple-500/20";
-      case "cv_download": return "bg-green-500/10 text-green-400 border border-green-500/20";
-      case "project_click": return "bg-orange-500/10 text-orange-400 border border-orange-500/20";
-      case "contact_submission": return "bg-teal-500/10 text-teal-400 border border-teal-500/20";
-      case "recommendation_submission": return "bg-amber-500/10 text-amber-400 border border-amber-500/20";
-      case "recommendations_panel_open": return "bg-pink-500/10 text-pink-400 border border-pink-500/20";
-      default: return "bg-env-text/5 text-env-muted border border-env-border/20";
+      case "portfolio_visit": return "bg-blue-500/15 text-blue-700 dark:text-blue-400 border border-blue-500/30";
+      case "resume_view": return "bg-purple-500/15 text-purple-700 dark:text-purple-400 border border-purple-500/30";
+      case "cv_download": return "bg-green-500/15 text-green-700 dark:text-green-400 border border-green-500/30";
+      case "project_click": return "bg-orange-500/15 text-orange-700 dark:text-orange-400 border border-orange-500/30";
+      case "contact_submission": return "bg-teal-500/15 text-teal-700 dark:text-teal-400 border border-teal-500/30";
+      case "recommendation_submission": return "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30";
+      case "recommendations_panel_open": return "bg-pink-500/15 text-pink-700 dark:text-pink-400 border border-pink-500/30";
+      default: return "bg-env-text/10 text-env-text border border-env-border/30";
     }
   };
 
@@ -117,7 +117,7 @@ export default function AdminAnalyticsPage() {
     <div className="space-y-8 animate-fade-in">
       
       {/* Overview Stat Card */}
-      <div className="flex items-center justify-between p-6 rounded-xl border border-env-border/20 bg-env-surface/40 backdrop-blur-xs">
+      <div className="flex items-center justify-between p-6 rounded-xl border border-env-border/30 bg-env-surface/85 backdrop-blur-md shadow-xs">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-env-text/5 rounded-xl border border-env-border/40 text-env-text">
             <BarChart3 className="h-5 w-5" />
@@ -143,15 +143,15 @@ export default function AdminAnalyticsPage() {
             <Eye className="h-4 w-4" />
             Popular Pages
           </h4>
-          <Card hoverEffect={false} className="p-0 bg-env-surface/30 border-env-border/20">
-            <div className="divide-y divide-env-border/10">
+          <Card hoverEffect={false} className="p-0 bg-env-surface/85 backdrop-blur-md border-env-border/30 shadow-xs">
+            <div className="divide-y divide-env-border/15">
               {data?.popularPages.length === 0 ? (
                 <div className="p-6 text-center text-env-muted italic select-none">No pages viewed yet.</div>
               ) : (
                 data?.popularPages.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between px-5 py-3.5 text-xs">
-                    <span className="font-mono text-env-text font-semibold">{item.page}</span>
-                    <span className="font-bold bg-env-text/5 px-2.5 py-1 rounded-md text-env-text">{item.count} hits</span>
+                  <div key={idx} className="flex items-center justify-between px-5 py-3.5 text-xs gap-3">
+                    <span className="font-mono text-env-text font-semibold truncate max-w-[200px]" title={item.page}>{item.page}</span>
+                    <span className="font-bold bg-env-text/10 px-2.5 py-1 rounded-md text-env-text shrink-0">{item.count} hits</span>
                   </div>
                 ))
               )}
@@ -165,15 +165,15 @@ export default function AdminAnalyticsPage() {
             <ExternalLink className="h-4 w-4" />
             Project Clicks
           </h4>
-          <Card hoverEffect={false} className="p-0 bg-env-surface/30 border-env-border/20">
-            <div className="divide-y divide-env-border/10">
+          <Card hoverEffect={false} className="p-0 bg-env-surface/85 backdrop-blur-md border-env-border/30 shadow-xs">
+            <div className="divide-y divide-env-border/15">
               {data?.projectClicks.length === 0 ? (
                 <div className="p-6 text-center text-env-muted italic select-none">No project clicks recorded.</div>
               ) : (
                 data?.projectClicks.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between px-5 py-3.5 text-xs">
-                    <span className="font-medium text-env-text capitalize font-body">{item.project.replace(/-/g, " ")}</span>
-                    <span className="font-bold bg-env-text/5 px-2.5 py-1 rounded-md text-env-text">{item.count} clicks</span>
+                  <div key={idx} className="flex items-center justify-between px-5 py-3.5 text-xs gap-3">
+                    <span className="font-medium text-env-text capitalize font-body truncate max-w-[200px]" title={item.project}>{item.project.replace(/-/g, " ")}</span>
+                    <span className="font-bold bg-env-text/10 px-2.5 py-1 rounded-md text-env-text shrink-0">{item.count} clicks</span>
                   </div>
                 ))
               )}
@@ -187,12 +187,12 @@ export default function AdminAnalyticsPage() {
             <Download className="h-4 w-4" />
             Asset Views / Downloads
           </h4>
-          <Card hoverEffect={false} className="p-0 bg-env-surface/30 border-env-border/20">
-            <div className="divide-y divide-env-border/10">
+          <Card hoverEffect={false} className="p-0 bg-env-surface/85 backdrop-blur-md border-env-border/30 shadow-xs">
+            <div className="divide-y divide-env-border/15">
               {data?.assets.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between px-5 py-3.5 text-xs">
-                  <span className="font-medium text-env-text font-body">{item.name}</span>
-                  <span className="font-bold bg-env-text/5 px-2.5 py-1 rounded-md text-env-text">{item.count} events</span>
+                <div key={idx} className="flex items-center justify-between px-5 py-3.5 text-xs gap-3">
+                  <span className="font-medium text-env-text font-body truncate max-w-[200px]" title={item.name}>{item.name}</span>
+                  <span className="font-bold bg-env-text/10 px-2.5 py-1 rounded-md text-env-text shrink-0">{item.count} events</span>
                 </div>
               ))}
             </div>
@@ -208,11 +208,11 @@ export default function AdminAnalyticsPage() {
           Analytics Event Log (Last 50 Events)
         </h4>
         
-        <Card hoverEffect={false} className="p-0 overflow-hidden bg-env-surface/30 border-env-border/20">
+        <Card hoverEffect={false} className="p-0 overflow-hidden bg-env-surface/85 backdrop-blur-md border-env-border/30 shadow-xs">
           <div className="w-full overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-env-border/30 bg-env-text/5 text-env-muted uppercase font-bold tracking-wider select-none">
+                <tr className="border-b border-env-border/40 bg-env-text/10 text-env-text uppercase font-bold tracking-wider select-none">
                   <th className="px-6 py-4">Event</th>
                   <th className="px-6 py-4">Route</th>
                   <th className="px-6 py-4">Device</th>
@@ -222,7 +222,7 @@ export default function AdminAnalyticsPage() {
                   <th className="px-6 py-4">Timestamp</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-env-border/10 font-body">
+              <tbody className="divide-y divide-env-border/15 font-body">
                 {data?.eventsLog.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-6 py-12 text-center text-env-muted italic select-none">
@@ -237,9 +237,9 @@ export default function AdminAnalyticsPage() {
                           {getEventLabel(event.eventType)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-env-text font-mono font-medium">{event.route}</td>
-                      <td className="px-6 py-4 text-env-text/90 capitalize">{event.deviceType}</td>
-                      <td className="px-6 py-4 text-env-text/90">{event.browser}</td>
+                      <td className="px-6 py-4 text-env-text font-mono font-medium max-w-[200px] truncate" title={event.route}>{event.route}</td>
+                      <td className="px-6 py-4 text-env-text capitalize font-medium">{event.deviceType}</td>
+                      <td className="px-6 py-4 text-env-text font-medium">{event.browser}</td>
                       <td className="px-6 py-4 text-env-muted font-mono">{event.sessionId.substring(0, 8)}...</td>
                       <td className="px-6 py-4 font-semibold text-env-text">
                         {event.country ? event.country : "Local/VPN"}
