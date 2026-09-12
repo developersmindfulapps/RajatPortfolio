@@ -122,3 +122,30 @@ export function trackPageView(pageName: string): void {
 export function trackRecommendationSubmission(): void {
   safeTrack("recommendation_submission");
 }
+
+/** Fired when the AI Assistant is opened. */
+export function trackAiAssistantOpen(): void {
+  safeTrack("ai_assistant_open");
+}
+
+/** Fired when a message is sent to the AI Assistant. */
+export function trackAiMessageSent(topic?: string): void {
+  safeTrack("ai_message_sent", topic ? { topic } : undefined);
+}
+
+/** Fired when a contact request is created via the AI Assistant. */
+export function trackAiContactCreated(): void {
+  safeTrack("ai_contact_created");
+}
+
+/** Fired when a proactive personality comment is displayed. */
+export function trackAiProactiveShown(messageId: string): void {
+  safeTrack("ai_proactive_shown", { messageId });
+}
+
+/** Fired when a scene-aware comment is triggered. */
+export function trackAiSceneCommentShown(scene: string): void {
+  safeTrack("ai_scene_comment_shown", { scene });
+}
+
+
