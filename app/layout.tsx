@@ -17,6 +17,7 @@ const inter = Inter({
 });
 
 import { EnvironmentBg } from "@/components/scene/EnvironmentBg";
+import { AiAssistant } from "@/components/ai/AiAssistant";
 
 export const metadata: Metadata = {
   title: "Personal Portfolio | Professional Work & Projects",
@@ -56,6 +57,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-transparent text-env-text">
         <EnvironmentBg>
           {children}
+          <AiAssistant />
         </EnvironmentBg>
         <SpeedInsights />
         <Analytics />
