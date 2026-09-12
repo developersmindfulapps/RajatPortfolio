@@ -14,7 +14,7 @@ export default function KeyCapabilities() {
 
   return (
     <Section
-      title="Key Capabilities"
+      title="Key Capabilities "
       subtitle="Core architectural components and systems powering the portfolio platform."
     >
       {/* Responsive Grid: 1 col on mobile, 2 on tablet/small monitors, 5 on large desktops */}
