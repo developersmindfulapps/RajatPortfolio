@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCollection } from "@/lib/mongodb";
+import { verifySessionToken } from "@/lib/session";
 
 const ALLOWED_EVENT_TYPES = new Set([
   "portfolio_visit",
@@ -27,6 +28,31 @@ interface AnalyticsEvent {
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
+    // 1. Skip logging if the request comes from an authenticated admin session
+    const sessionCookie = req.cookies.get("admin_session")?.value;
+    if (sessionCookie) {
+      const adminSession = await verifySessionToken(sessionCookie);
+      if (adminSession) {
+        return NextResponse.json(
+          { success: true, ignored: true, reason: "admin_session" },
+          { status: 200 }
+        );
+      }
+    }
+
+    // 2. Skip logging in development or if host is localhost
+    const host = req.headers.get("host") || "";
+    if (
+      process.env.NODE_ENV === "development" ||
+      host.startsWith("localhost") ||
+      host.startsWith("127.0.0.1")
+    ) {
+      return NextResponse.json(
+        { success: true, ignored: true, reason: "localhost_dev" },
+        { status: 200 }
+      );
+    }
+
     const body = await req.json();
 
     if (!body || typeof body !== "object") {

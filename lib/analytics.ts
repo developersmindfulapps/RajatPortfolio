@@ -44,7 +44,67 @@ function getDeviceType(): string {
   return "desktop";
 }
 
+// Check if analytics should be excluded (localhost, dev mode, or admin opt-out flag)
+export function isAnalyticsDisabled(): boolean {
+  if (typeof window === "undefined") return false;
+
+  // 1. Ignore localhost / development environment
+  const hostname = window.location.hostname;
+  if (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "[::1]" ||
+    hostname.endsWith(".local") ||
+    process.env.NODE_ENV === "development"
+  ) {
+    return true;
+  }
+
+  // 2. Check query params for instant opt-out/opt-in toggle
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("disable_analytics") === "true" || params.get("admin_mode") === "true") {
+      localStorage.setItem("portfolio_ignore_analytics", "true");
+      return true;
+    } else if (params.get("enable_analytics") === "true") {
+      localStorage.removeItem("portfolio_ignore_analytics");
+      return false;
+    }
+  } catch {
+    // Ignore URL/storage access errors
+  }
+
+  // 3. Check persistent localStorage opt-out flag (set by admin dashboard or manual toggle)
+  try {
+    if (localStorage.getItem("portfolio_ignore_analytics") === "true") {
+      return true;
+    }
+  } catch {
+    // Ignore storage errors
+  }
+
+  return false;
+}
+
+export function setAnalyticsExcluded(excluded: boolean): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (excluded) {
+      localStorage.setItem("portfolio_ignore_analytics", "true");
+    } else {
+      localStorage.removeItem("portfolio_ignore_analytics");
+    }
+  } catch {
+    // Ignore storage errors
+  }
+}
+
 function safeTrack(event: string, properties?: Record<string, string>): void {
+  // Completely skip tracking if on localhost, dev mode, or if admin opt-out is enabled
+  if (isAnalyticsDisabled()) {
+    return;
+  }
+
   // 1. Send to Vercel Analytics (non-blocking)
   try {
     track(event, properties);

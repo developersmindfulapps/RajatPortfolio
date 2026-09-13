@@ -54,6 +54,13 @@ export default function AdminLoginPage() {
         throw new Error(data.error || "Login failed. Please try again.");
       }
 
+      // Exclude admin's browser from future analytics tracking
+      try {
+        localStorage.setItem("portfolio_ignore_analytics", "true");
+      } catch {
+        // Ignore storage errors
+      }
+
       // Successful login -> redirect to Overview dashboard
       router.push("/admin/overview");
       router.refresh();
