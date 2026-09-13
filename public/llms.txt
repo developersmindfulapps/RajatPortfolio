@@ -1,0 +1,59 @@
+# Rajat Deep Singh — Senior Frontend Engineer & Web Developer
+
+> Senior Frontend Engineer with 8+ years of enterprise experience specializing in Angular, React, Next.js, TypeScript, Microfrontends, and High-Performance Web Applications.
+
+## Overview
+- **Name:** Rajat Deep Singh (Rajat)
+- **Title:** Senior Frontend Engineer
+- **Location:** Gurgaon, Haryana, India
+- **Website:** https://www.rajatdeepsingh.xyz
+- **LinkedIn:** https://www.linkedin.com/in/rajatdeepsingh2417/
+- **GitHub:** https://github.com/developersmindfulapps
+- **Email:** rajatdeepsingh0605@gmail.com / developers.mindfulapps@gmail.com
+
+## Professional Summary
+Senior Frontend Engineer with 8+ years of experience building enterprise-scale web applications, independently deployable microfrontends, data-intensive interfaces, and developer tooling. Deep expertise in Angular (including Signals, RxJS, component architecture), React, Next.js (App Router), TypeScript, state management, and web performance optimization across telecommunications, banking & finance, recruitment, and low-code platforms.
+
+## Core Technical Proficiencies
+- **Frontend Frameworks & Libraries:** Angular (Signals, RxJS, Angular Material), React, Next.js (App Router, SSR, SSG), TypeScript, JavaScript (ES6+), HTML5, CSS3 / Tailwind CSS
+- **State & Architecture:** RxJS, Angular Signals, Zustand, Redux Toolkit, Microfrontends, Module Federation, Configuration-Driven UI, Lazy Loading
+- **Data Visualization & Data-Intensive Grids:** AG Grid (1M+ record datasets, server-side pagination & filtering), Highcharts, React Flow
+- **Backend & APIs:** REST APIs, GraphQL, Node.js, Express.js, MongoDB, PostgreSQL, Supabase, Keycloak Authentication, VS Code APIs
+- **Delivery & Quality:** Jest, React Testing Library, Git, GitHub Actions, CI/CD, SonarQube, WCAG 2.0 Accessibility, Core Web Vitals Optimization
+
+## Career Experience
+
+### Netcracker — Software Engineer (12/2024 – 08/2026 | Gurgaon, India)
+- Designed and built an Angular-based VS Code extension for a commercial low-code platform, enabling configuration and UI management via YAML and JSON.
+- Reduced production frontend bundle size by 35% through lazy-loading improvements and dependency optimization.
+- Engineered 10–15 reusable Angular components with Angular Signals and computed state primitives.
+- Owned 5+ features from technical design through production deployment.
+
+### Capgemini (Client: Tata Communications) — Software Engineer (08/2021 – 10/2024 | Gurgaon / Remote)
+- Built enterprise billing and analytics platforms supporting 5,000+ internal users and 100,000+ monthly page views using Angular, RxJS, REST APIs, AG Grid, and Highcharts.
+- Implemented AG Grid with server-side pagination, sorting, and filtering for 1M+ record datasets.
+- Developed configuration-driven Angular interfaces and integrated Keycloak authentication.
+- Built internal telecom troubleshooting and monitoring tools using React, Material UI, Highcharts, and React Flow. Mentored 3 developers.
+
+### Infosys — System Engineer Trainee to Senior Software Developer (05/2018 – 07/2021 | Chandigarh / Remote)
+- Engineered independently deployable microfrontends for enterprise recruitment workflows (INTAP), reducing manual operational overhead by ~40%.
+- Developed banking workflows (CSTR) using React, Redux, GraphQL, and Material UI, reducing signup friction by ~20% and implementing WCAG 2.0 accessibility standards.
+- Reduced production bundle size from 12 MB to 6.8 MB (43% reduction) while sustaining 90+ Lighthouse performance.
+
+## Featured Projects
+
+1. **Personal Portfolio Platform (https://www.rajatdeepsingh.xyz/case-study)**
+   - Full-stack portfolio platform built with Next.js App Router, dynamic time-aware shaders, interactive SVG constellation node map, tokenized recommendation workflows, edge-authenticated admin dashboard, and AI Assistant.
+2. **Bat Cave (https://bat-cave-theta.vercel.app/)**
+   - Modern web platform and booking system for an indoor cricket facility in Baramulla, Jammu & Kashmir.
+3. **Law Practice Platform (https://altafs-website-6pmd.vercel.app/)**
+   - Content and consultation platform for legal practice with custom admin content management, Resend and Twilio workflow integrations.
+4. **EventUally (Mobile App - Private Beta)**
+   - Cross-platform event planning mobile platform built with React Native, Expo, Node.js, Express, PostgreSQL, Prisma, and Supabase.
+
+## Services Offered
+- Enterprise Frontend Architecture & Consulting (Angular, React, Next.js)
+- High-Performance Business & Product Web Applications
+- Microfrontend & Design System Architecture
+- Web Performance Optimization & Core Web Vitals Auditing
+- Data-Intensive Grid & Interactive Dashboard Engineering (AG Grid, Highcharts)
