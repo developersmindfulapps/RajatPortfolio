@@ -50,6 +50,144 @@ function generateMessageId(prefix: string): string {
   return `${prefix}_${Date.now()}_${messageCounter}`;
 }
 
+function renderInlineFormatting(text: string, isUser = false): React.ReactNode[] {
+  const regex = /(\[.*?\]\(https?:\/\/[^\s)]+\)|\*\*.*?\*\*|`.*?`|https?:\/\/[^\s]+)/g;
+  const parts = text.split(regex);
+
+  return parts.map((part, i) => {
+    if (!part) return null;
+
+    // Markdown link: [text](url)
+    const linkMatch = part.match(/^\[(.*?)\]\((https?:\/\/[^\s)]+)\)$/);
+    if (linkMatch) {
+      const linkText = linkMatch[1];
+      const linkUrl = linkMatch[2];
+      return (
+        <a
+          key={i}
+          href={linkUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`underline font-semibold transition-colors inline-flex items-center gap-0.5 mx-0.5 cursor-pointer ${
+            isUser ? "text-sky-200 hover:text-white" : "text-sky-400 hover:text-sky-300"
+          }`}
+        >
+          <span>{linkText}</span>
+          <ArrowUpRight className="h-3 w-3 inline shrink-0" />
+        </a>
+      );
+    }
+
+    // Raw URL: https://...
+    if (part.startsWith("http://") || part.startsWith("https://")) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`underline font-semibold transition-colors inline-flex items-center gap-0.5 mx-0.5 cursor-pointer ${
+            isUser ? "text-sky-200 hover:text-white" : "text-sky-400 hover:text-sky-300"
+          }`}
+        >
+          <span>{part}</span>
+          <ArrowUpRight className="h-3 w-3 inline shrink-0" />
+        </a>
+      );
+    }
+
+    // Bold: **text**
+    if (part.startsWith("**") && part.endsWith("**") && part.length >= 4) {
+      return (
+        <strong key={i} className={`font-semibold ${isUser ? "text-inherit" : "text-env-text"}`}>
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+
+    // Inline code: `code`
+    if (part.startsWith("`") && part.endsWith("`") && part.length >= 2) {
+      return (
+        <code key={i} className="bg-env-text/10 px-1 py-0.5 rounded text-[11px] font-mono">
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+
+    // Plain text
+    return <span key={i}>{part}</span>;
+  });
+}
+
+function FormattedMessage({ content, isUser = false }: { content: string; isUser?: boolean }) {
+  if (!content) return null;
+
+  if (isUser) {
+    return <div className="whitespace-pre-wrap">{content}</div>;
+  }
+
+  const lines = content.split("\n");
+  const blocks: React.ReactNode[] = [];
+  let currentList: React.ReactNode[] = [];
+  let listIndex = 0;
+
+  const flushList = () => {
+    if (currentList.length > 0) {
+      blocks.push(
+        <ul key={`list-${listIndex++}`} className="space-y-1.5 my-1.5 pl-0.5">
+          {currentList}
+        </ul>
+      );
+      currentList = [];
+    }
+  };
+
+  lines.forEach((rawLine, idx) => {
+    const line = rawLine.trim();
+
+    if (!line) {
+      flushList();
+      return;
+    }
+
+    // Strip Markdown headers (### or ## or #)
+    const headerMatch = line.match(/^#{1,4}\s+(.+)$/);
+    if (headerMatch) {
+      flushList();
+      blocks.push(
+        <div key={`head-${idx}`} className="font-bold text-env-text text-xs md:text-[13px] font-heading mt-2 mb-1">
+          {renderInlineFormatting(headerMatch[1], isUser)}
+        </div>
+      );
+      return;
+    }
+
+    // Bullet items (- or * or •)
+    const bulletMatch = line.match(/^[-*•]\s+(.+)$/);
+    if (bulletMatch) {
+      currentList.push(
+        <li key={`li-${idx}`} className="flex items-start gap-1.5 text-xs md:text-[13px] leading-relaxed">
+          <span className="text-env-text/60 font-bold shrink-0 select-none">•</span>
+          <span className="flex-1">{renderInlineFormatting(bulletMatch[1], isUser)}</span>
+        </li>
+      );
+      return;
+    }
+
+    // Standard line
+    flushList();
+    blocks.push(
+      <p key={`p-${idx}`} className="text-xs md:text-[13px] leading-relaxed my-0.5">
+        {renderInlineFormatting(line, isUser)}
+      </p>
+    );
+  });
+
+  flushList();
+
+  return <div className="space-y-1">{blocks}</div>;
+}
+
 export function AiAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
@@ -555,9 +693,10 @@ export function AiAssistant() {
                             : "bg-env-text/5 border border-env-border/60 text-env-text rounded-tl-xs"
                         }`}
                       >
-                        <div className="whitespace-pre-wrap font-body text-xs md:text-[13px] leading-relaxed break-words">
-                          {msg.content || (msg.isStreaming ? "..." : "")}
-                        </div>
+                        <FormattedMessage
+                          content={msg.content || (msg.isStreaming ? "..." : "")}
+                          isUser={msg.role === "user"}
+                        />
                       </div>
 
                       {/* User message icon */}

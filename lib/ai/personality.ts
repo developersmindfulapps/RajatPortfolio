@@ -69,9 +69,9 @@ export const PROACTIVE_MESSAGES: ProactiveMessage[] = [
     text: "You're still here? I respect the commitment.",
   },
   {
-    id: "witty_questions",
+    id: "scenery_camp",
     type: "general",
-    text: "Okay, now you're asking the right questions.",
+    text: "I wish I could camp here... 🏕️",
   },
 ];
 
